@@ -1,0 +1,69 @@
+# Scratch folder - for random code and experiments
+scratch/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+
+# Conda environments
+*.lock
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb_checkpoints/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# MLOps specific
+mlruns/
+artifacts/
+models/
+*.pkl
+*.h5
+*.onnx
+
+# Data (uncomment if you don't want to commit datasets)
+# data/
+# *.csv
+# *.parquet
+
+# Logs
+*.log
+logs/
+
+# Environment variables
+.env
+.env.local
