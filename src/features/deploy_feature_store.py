@@ -32,7 +32,7 @@ def deploy_feature_set():
     )
     
     # Load Feature Spec
-    feature_spec_path = Path("feature_specs/heart_disease_features.yaml")
+    feature_spec_path = Path("feature_specs/FeatureSetSpec.yaml")
     print(f"Loading feature specification from {feature_spec_path}...")
     
     with open(feature_spec_path, "r") as f:
@@ -49,7 +49,7 @@ def deploy_feature_set():
         version=fs_version,
         description="Heart Disease Prediction Features",
         entities=["age", "sex"], # Ideally defined as entities in Azure ML, keeping simple for now
-        specification=FeatureSetSpecification(path="feature_specs/heart_disease_features.yaml"),
+        specification=FeatureSetSpecification(path="feature_specs/"),
         tags={"project": "heart-disease", "created_by": "mlops-pipeline"}
     )
     
