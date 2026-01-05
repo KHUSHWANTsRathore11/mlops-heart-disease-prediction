@@ -2,9 +2,27 @@ name: Feature Store CI/CD
 
 on:
   push:
-    branches: [ main, develop , feature/*]
+    branches: [ main, develop, feature/* ]
+    paths:
+      - 'src/**'
+      - 'feature_specs/**'
+      - 'data/**'
+      - 'dvc.yaml'
+      - 'dvc.lock'
+      - 'requirements.txt'
+      - 'project_config.yaml'
+      - '.github/workflows/feature-store-cicd.yml'
   pull_request:
     branches: [ main, develop ]
+    paths:
+      - 'src/**'
+      - 'feature_specs/**'
+      - 'data/**'
+      - 'dvc.yaml'
+      - 'dvc.lock'
+      - 'requirements.txt'
+      - 'project_config.yaml'
+      - '.github/workflows/feature-store-cicd.yml'
   workflow_dispatch:
 
 permissions:
