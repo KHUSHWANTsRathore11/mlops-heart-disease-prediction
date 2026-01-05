@@ -16,3 +16,15 @@ stages:
       - data/processed/features_train.csv
       - data/processed/features_test.csv
 
+  train_model:
+    cmd: python src/models/train_model.py --train-path data/processed/features_train.csv --test-path data/processed/features_test.csv --output-path models/model.pkl
+    deps:
+      - src/models/train_model.py
+      - data/processed/features_train.csv
+      - data/processed/features_test.csv
+    outs:
+      - models/model.pkl
+    metrics:
+      - metrics/training_metrics.json:
+          cache: false
+

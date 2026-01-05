@@ -50,7 +50,7 @@ Thumbs.db
 # MLOps specific
 mlruns/
 artifacts/
-models/
+/models/
 *.pkl
 *.h5
 *.onnx
