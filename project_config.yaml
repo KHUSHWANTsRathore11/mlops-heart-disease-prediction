@@ -1,6 +1,6 @@
 azure:
   resource_group: "mlops-heart-rg"
-  workspace_name: "mlops-heart-disease-ws"
+  workspace_name: "mlops-heart-aml-ws"
   location: "southeastasia"
 
 storage:
