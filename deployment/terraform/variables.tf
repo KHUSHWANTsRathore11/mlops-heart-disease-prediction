@@ -25,3 +25,10 @@ variable "tags" {
     Project     = "Heart-Disease-ML"
   }
 }
+
+variable "data_scientist_group_object_id" {
+  description = "The Object ID of the Entra ID (Azure AD) Group for Data Scientists"
+  type        = string
+  # Default is null so we can check if it's provided before assigning
+  default     = null 
+}
