@@ -56,7 +56,8 @@ models/
 *.onnx
 
 # Data (uncomment if you don't want to commit datasets)
-/data/
+/data/*
+!/data/**/*.dvc
 *.csv
 *.parquet
 
