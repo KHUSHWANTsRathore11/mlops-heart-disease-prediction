@@ -47,13 +47,15 @@ def deploy_feature_set():
     # Azure connection details
     subscription_id = config['azure']['subscription_id']
     resource_group = config['azure']['resource_group']
-    workspace_name = config['azure']['workspace_name']
+    
+    # Use Feature Store resource if defined, otherwise default workspace
+    workspace_name = config['feature_store'].get('resource_name', config['azure']['workspace_name'])
     
     # Feature Store details
     fs_name = config['feature_store']['name']
     fs_version = config['feature_store']['version']
     
-    print(f"Connecting to Azure ML Workspace: {workspace_name}...")
+    print(f"Connecting to Feature Store/Workspace: {workspace_name}...")
     ml_client = MLClient(
         DefaultAzureCredential(),
         subscription_id,

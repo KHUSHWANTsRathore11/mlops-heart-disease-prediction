@@ -8,5 +8,6 @@ storage:
   container_name: "dvc-data"
 
 feature_store:
-  name: "heart-disease-fs"
+  resource_name: "heart-disease-fs"
+  name: "heart-disease-features"
   version: "1.0"
