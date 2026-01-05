@@ -50,4 +50,5 @@ index_columns:
 source:
   type: uri_file
   path: ../data/processed/features_train.csv
-  timestamp_column: timestamp
+  timestamp_column:
+    name: "timestamp"
