@@ -1,0 +1,18 @@
+stages:
+  clean_data:
+    cmd: python src/data/preprocessing.py
+    deps:
+      - src/data/preprocessing.py
+      - data/raw/
+    outs:
+      - data/processed/heart_disease_clean.csv
+  
+  engineer_features:
+    cmd: python src/features/engineer_features.py
+    deps:
+      - src/features/engineer_features.py
+      - data/processed/heart_disease_clean.csv
+    outs:
+      - data/processed/features_train.csv
+      - data/processed/features_test.csv
+      - models/preprocessor.pkl

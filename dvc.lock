@@ -1,0 +1,43 @@
+schema: '2.0'
+stages:
+  clean_data:
+    cmd: python src/data/preprocessing.py
+    deps:
+    - path: data/raw/
+      hash: md5
+      md5: 07fad6e7c0967001582b60314dedb214.dir
+      size: 89787
+      nfiles: 5
+    - path: src/data/preprocessing.py
+      hash: md5
+      md5: f755afc7a065a6a40183666469d9fb1f
+      size: 7535
+    outs:
+    - path: data/processed/heart_disease_clean.csv
+      hash: md5
+      md5: 1e00b3da6bb5ea4e2dc5e61b16b2472a
+      size: 55660
+  engineer_features:
+    cmd: python src/features/engineer_features.py
+    deps:
+    - path: data/processed/heart_disease_clean.csv
+      hash: md5
+      md5: 1e00b3da6bb5ea4e2dc5e61b16b2472a
+      size: 55660
+    - path: src/features/engineer_features.py
+      hash: md5
+      md5: e7631ae90ec5445246729ac9a593b71f
+      size: 3715
+    outs:
+    - path: data/processed/features_test.csv
+      hash: md5
+      md5: a6549a2b2ca56f6e69a1ec1a484d93b7
+      size: 46982
+    - path: data/processed/features_train.csv
+      hash: md5
+      md5: cf08d172148f330c65ed7eac4e871e74
+      size: 187273
+    - path: models/preprocessor.pkl
+      hash: md5
+      md5: fed6fd44efbcf305d10328d20993bd80
+      size: 1159

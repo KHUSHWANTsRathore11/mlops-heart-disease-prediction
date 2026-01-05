@@ -30,7 +30,7 @@ env/
 .venv
 
 # Conda environments
-*.lock
+
 
 # Jupyter Notebook
 .ipynb_checkpoints
@@ -56,9 +56,9 @@ models/
 *.onnx
 
 # Data (uncomment if you don't want to commit datasets)
-# data/
-# *.csv
-# *.parquet
+data/
+*.csv
+*.parquet
 
 # Logs
 *.log
