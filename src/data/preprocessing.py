@@ -145,6 +145,12 @@ def clean_data(df, target_col='target'):
     if target_col in df_clean.columns:
         df_clean[target_col] = (df_clean[target_col] > 0).astype(int)
     
+    # Add dummy timestamp and index for Feature Store compatibility
+    if 'timestamp' not in df_clean.columns:
+        df_clean['timestamp'] = pd.Timestamp.now()
+    if 'patient_id' not in df_clean.columns:
+        df_clean['patient_id'] = range(1, len(df_clean) + 1)
+    
     # Handle missing values
     # For numerical columns, fill with median
     numerical_cols = df_clean.select_dtypes(include=[np.number]).columns
