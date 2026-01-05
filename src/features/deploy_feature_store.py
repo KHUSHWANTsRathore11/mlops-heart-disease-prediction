@@ -10,6 +10,34 @@ sys.path.append(str(Path(__file__).resolve().parents[2]))
 
 from src.config import load_config
 
+def get_dvc_hash(file_path):
+    """Parses dvc.lock to find the md5 hash of a specific file."""
+    with open("dvc.lock", "r") as f:
+        lock_data = yaml.safe_load(f)
+    
+    for stage in lock_data.get('stages', {}).values():
+        for out in stage.get('outs', []):
+            if out.get('path') == file_path:
+                return out.get('md5')
+    return None
+
+def get_cloud_path(config, file_path):
+    """Constructs the Azure Blob URL for a DVC-tracked file."""
+    md5_hash = get_dvc_hash(file_path)
+    if not md5_hash:
+        raise ValueError(f"Could not find hash for {file_path} in dvc.lock")
+    
+    account_name = config['storage']['account_name']
+    container_name = config['storage']['container_name']
+    
+    # DVC default structure: files/md5/ab/cdef...
+    blob_path = f"files/md5/{md5_hash[:2]}/{md5_hash[2:]}"
+    
+    # Construct WASBS URL (optimized for Azure ML)
+    # wasbs://<container>@<account>.blob.core.windows.net/<path>
+    url = f"wasbs://{container_name}@{account_name}.blob.core.windows.net/{blob_path}"
+    return url
+
 def deploy_feature_set():
     print("Loading project configuration...")
     config = load_config()
@@ -31,12 +59,27 @@ def deploy_feature_set():
         workspace_name
     )
     
-    # Load Feature Spec
+    # Load Feature Spec and Update Source dynamically
     feature_spec_path = Path("feature_specs/FeatureSetSpec.yaml")
     print(f"Loading feature specification from {feature_spec_path}...")
     
     with open(feature_spec_path, "r") as f:
         feature_spec = yaml.safe_load(f)
+    
+    # Dynamic Source Update
+    print("Resolving Cloud URI for features_train.csv from DVC...")
+    cloud_url = get_cloud_path(config, "data/processed/features_train.csv")
+    print(f"Resolved Cloud URL: {cloud_url}")
+    
+    feature_spec['source'] = {
+        'type': 'uri_file',
+        'path': cloud_url
+    }
+    
+    # Save a temporary spec file with the cloud URL
+    temp_spec_path = Path("feature_specs/FeatureSetSpec_cloud.yaml")
+    with open(temp_spec_path, "w") as f:
+        yaml.dump(feature_spec, f)
         
     print(f"Registering Feature Set: {fs_name} (Version: {fs_version})...")
     
@@ -49,8 +92,8 @@ def deploy_feature_set():
         version=fs_version,
         description="Heart Disease Prediction Features",
         entities=["age", "sex"], # Ideally defined as entities in Azure ML, keeping simple for now
-        specification=FeatureSetSpecification(path="feature_specs/"),
-        tags={"project": "heart-disease", "created_by": "mlops-pipeline"}
+        specification=FeatureSetSpecification(path="feature_specs/FeatureSetSpec_cloud.yaml"),
+        tags={"project": "heart-disease", "created_by": "mlops-pipeline", "dvc_source": cloud_url}
     )
     
     # Create or Update
