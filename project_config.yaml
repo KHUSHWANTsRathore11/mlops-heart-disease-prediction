@@ -7,7 +7,4 @@ storage:
   account_name: "mlopsheartstor4enbsn"
   container_name: "dvc-data"
 
-feature_store:
-  resource_name: "heart-disease-fs"
-  name: "heart-disease-features"
-  version: "1.0"
+
