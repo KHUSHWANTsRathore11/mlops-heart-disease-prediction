@@ -1,5 +1,7 @@
 import sys
 import yaml
+import tempfile
+import shutil
 from pathlib import Path
 from azure.ai.ml import MLClient
 from azure.ai.ml.entities import FeatureSet, FeatureSetSpecification
@@ -76,30 +78,32 @@ def deploy_feature_set():
         'path': cloud_url
     }
     
-    # Save a temporary spec file with the cloud URL
-    temp_spec_path = Path("feature_specs/FeatureSetSpec_cloud.yaml")
-    with open(temp_spec_path, "w") as f:
-        yaml.dump(feature_spec, f)
+    
+    # Use temporary directory for the spec folder
+    with tempfile.TemporaryDirectory() as temp_dir:
+        temp_spec_path = Path(temp_dir) / "FeatureSetSpec.yaml"
         
-    print(f"Registering Feature Set: {fs_name} (Version: {fs_version})...")
-    
-    # Define Feature Set
-    # Note: In a real scenario, you typically point to the path containing the transformation code (code=...)
-    # For now, we are registering the specification and lineage.
-    
-    heart_disease_features = FeatureSet(
-        name=fs_name,
-        version=fs_version,
-        description="Heart Disease Prediction Features",
-        entities=["age", "sex"], # Ideally defined as entities in Azure ML, keeping simple for now
-        specification=FeatureSetSpecification(path="feature_specs/FeatureSetSpec_cloud.yaml"),
-        tags={"project": "heart-disease", "created_by": "mlops-pipeline", "dvc_source": cloud_url}
-    )
-    
-    # Create or Update
-    poller = ml_client.feature_sets.begin_create_or_update(heart_disease_features)
-    print("Operation started. Waiting for completion...")
-    poller.result()
+        # Save the modified spec to the temp dir with the correct name
+        with open(temp_spec_path, "w") as f:
+            yaml.dump(feature_spec, f)
+            
+        print(f"Registering Feature Set: {fs_name} (Version: {fs_version})...")
+        
+        # Define Feature Set
+        # The specification requires the PATH to the FOLDER containing FeatureSetSpec.yaml
+        heart_disease_features = FeatureSet(
+            name=fs_name,
+            version=fs_version,
+            description="Heart Disease Prediction Features",
+            entities=["age", "sex"], # Ideally defined as entities in Azure ML, keeping simple for now
+            specification=FeatureSetSpecification(path=temp_dir),
+            tags={"project": "heart-disease", "created_by": "mlops-pipeline", "dvc_source": cloud_url}
+        )
+        
+        # Create or Update
+        poller = ml_client.feature_sets.begin_create_or_update(heart_disease_features)
+        print("Operation started. Waiting for completion...")
+        poller.result()
     
     print(f"Feature Set {fs_name}:{fs_version} successfully registered!")
 
