@@ -71,11 +71,17 @@ resource "random_string" "suffix" {
   upper   = false
 }
 
+# Look up the Group ID from the Name
+# NOTE: The Principal running Terraform must have permissions to read Entra ID Groups
+data "azuread_group" "ds_group" {
+  count        = var.data_scientist_group_name != null ? 1 : 0
+  display_name = var.data_scientist_group_name
+}
+
 # Role Assignment: Grant "AzureML Data Scientist" to the Entra Group
-# Only creates this if the variable is provided
 resource "azurerm_role_assignment" "data_scientist_role" {
-  count                = var.data_scientist_group_object_id != null ? 1 : 0
+  count                = var.data_scientist_group_name != null ? 1 : 0
   scope                = azurerm_machine_learning_workspace.aml.id
   role_definition_name = "AzureML Data Scientist"
-  principal_id         = var.data_scientist_group_object_id
+  principal_id         = data.azuread_group.ds_group[0].object_id
 }

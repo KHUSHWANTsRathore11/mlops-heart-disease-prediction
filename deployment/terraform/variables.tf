@@ -26,9 +26,8 @@ variable "tags" {
   }
 }
 
-variable "data_scientist_group_object_id" {
-  description = "The Object ID of the Entra ID (Azure AD) Group for Data Scientists"
+variable "data_scientist_group_name" {
+  description = "The Name of the Entra ID (Azure AD) Group for Data Scientists (e.g. 'mlops-data-scientists')"
   type        = string
-  # Default is null so we can check if it's provided before assigning
   default     = null 
 }
