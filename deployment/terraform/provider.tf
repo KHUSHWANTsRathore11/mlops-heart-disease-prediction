@@ -9,7 +9,7 @@ terraform {
       version = "~> 2.0"
     }
   }
-  
+
   # Backend configuration for remote state
   # Values will be passed in via CLI in CI/CD pipeline
   backend "azurerm" {}

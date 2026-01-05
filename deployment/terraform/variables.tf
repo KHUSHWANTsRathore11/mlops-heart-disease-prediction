@@ -11,10 +11,10 @@ variable "prefix" {
 }
 
 variable "subscription_id" {
-    description = "The Azure subscription ID"
-    type        = string
-    sensitive   = true
-    default = null
+  description = "The Azure subscription ID"
+  type        = string
+  sensitive   = true
+  default     = null
 }
 
 variable "tags" {
@@ -29,5 +29,5 @@ variable "tags" {
 variable "data_scientist_group_name" {
   description = "The Name of the Entra ID (Azure AD) Group for Data Scientists (e.g. 'mlops-data-scientists')"
   type        = string
-  default     = null 
+  default     = null
 }

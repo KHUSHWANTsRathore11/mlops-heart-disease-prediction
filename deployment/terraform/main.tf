@@ -55,7 +55,7 @@ resource "azurerm_machine_learning_workspace" "aml" {
   key_vault_id            = azurerm_key_vault.kv.id
   storage_account_id      = azurerm_storage_account.storage.id
   container_registry_id   = azurerm_container_registry.acr.id
-  
+
   public_network_access_enabled = true
   identity {
     type = "SystemAssigned"
