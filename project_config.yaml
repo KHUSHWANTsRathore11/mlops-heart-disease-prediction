@@ -1,5 +1,5 @@
 azure:
-  resource_group: "mlops-heart-disease-rg"
+  resource_group: "mlops-heart-rg"
   workspace_name: "mlops-heart-disease-ws"
   location: "southeastasia"
 
