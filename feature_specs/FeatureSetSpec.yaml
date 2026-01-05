@@ -42,3 +42,11 @@ features:
   - name: thal
     type: integer
     description: Thalassemia
+
+index_columns:
+  - name: patient_id
+    type: integer
+
+source:
+  type: uri_file
+  path: ../data/processed/features_train.csv
