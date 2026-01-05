@@ -31,3 +31,5 @@ urllib3==2.1.0
 # DVC and Data Versioning
 dvc[azure]==3.30.1
 azure-identity==1.15.0
+PyYAML
+azure-ai-ml==1.12.0

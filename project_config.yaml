@@ -1,0 +1,12 @@
+azure:
+  resource_group: "mlops-heart-disease-rg"
+  workspace_name: "mlops-heart-disease-ws"
+  location: "southeastasia"
+
+storage:
+  account_name: "mlopsheartstor4enbsn"
+  container_name: "dvc-data"
+
+feature_store:
+  name: "heart-disease-fs"
+  version: "1.0"

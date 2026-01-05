@@ -33,6 +33,11 @@ jobs:
     - name: Set up DVC
       uses: iterative/setup-dvc@v1
 
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
     # Temporary step: Download data since remote is not configured
     - name: Download Raw Data
       run: |
@@ -40,8 +45,22 @@ jobs:
         python src/data/download_data.py
 
     - name: Run DVC Pipeline
+      env:
+        AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+        AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       run: |
         dvc repro
+        
+    - name: Register Features to Store
+      env:
+        AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+        AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      run: |
+        python src/features/deploy_feature_store.py
         
     - name: Verify Outputs
       run: |
