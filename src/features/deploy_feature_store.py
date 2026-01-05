@@ -75,7 +75,7 @@ def deploy_feature_set():
     cloud_url = get_cloud_path(config, "data/processed/features_train.csv")
     print(f"Resolved Cloud URL: {cloud_url}")
     
-    feature_spec['source']['type'] = 'uri_file'
+    feature_spec['source']['type'] = 'csv'
     feature_spec['source']['path'] = cloud_url
     
     
