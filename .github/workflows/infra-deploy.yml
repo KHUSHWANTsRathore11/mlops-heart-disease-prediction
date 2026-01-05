@@ -23,7 +23,7 @@ env:
   WORKING_DIR: 'deployment/terraform'
   # Backend Config (Update these names after manually creating the storage)
   BACKEND_RG_NAME: "mlops-terraform-state-rg"
-  BACKEND_STORAGE_ACCOUNT: "mlopstfstate12345"
+  BACKEND_STORAGE_ACCOUNT: "mlopstfstate123456"
   BACKEND_CONTAINER_NAME: "tfstate"
   BACKEND_KEY: "prod.terraform.tfstate"
 
