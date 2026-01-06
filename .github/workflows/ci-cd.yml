@@ -449,14 +449,9 @@ jobs:
         echo "STAGE 8.3: Service Configuration"
         echo "========================================="
         if [ -f "k8s/service.yaml" ]; then
-          python << 'EOF'
-          import yaml
-          with open('k8s/service.yaml') as f:
-            config = yaml.safe_load(f)
-            print(f"Service type: {config['spec']['type']}")
-            print(f"Port: {config['spec']['ports'][0]['port']}")
-            print('[SUCCESS] Service config validated')
-          EOF
+          python tests/test_k8s_service.py
+        else
+          echo "[INFO] Skipping service check (k8s/service.yaml not found)"
         fi
     
     - name: Stage 8 Summary
