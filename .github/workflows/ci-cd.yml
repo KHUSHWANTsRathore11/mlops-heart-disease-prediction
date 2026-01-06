@@ -346,14 +346,14 @@ jobs:
         echo "STAGE 6.2: API Endpoints Check"
         echo "========================================="
         python << 'EOF'
-from app.main import app
+        from app.main import app
 
-with app.app_context():
-    print('Available endpoints:')
-    for rule in app.url_map.iter_rules():
-        print(f'  {rule.endpoint}: {rule.rule} [{rule.methods}]')
-    print('[SUCCESS] API endpoints validated')
-EOF
+        with app.app_context():
+            print('Available endpoints:')
+            for rule in app.url_map.iter_rules():
+                print(f'  {rule.endpoint}: {rule.rule} [{rule.methods}]')
+            print('[SUCCESS] API endpoints validated')
+        EOF
     
     - name: Validate monitoring scripts
       run: |
@@ -456,13 +456,13 @@ EOF
         echo "========================================="
         if [ -f "k8s/deployment.yaml" ]; then
           python << 'EOF'
-import yaml
-with open('k8s/deployment.yaml') as f:
-    config = yaml.safe_load(f)
-    print(f"Replicas: {config['spec']['replicas']}")
-    print(f"Image: {config['spec']['template']['spec']['containers'][0]['image']}")
-    print('[SUCCESS] Deployment config validated')
-EOF
+          import yaml
+          with open('k8s/deployment.yaml') as f:
+              config = yaml.safe_load(f)
+              print(f"Replicas: {config['spec']['replicas']}")
+              print(f"Image: {config['spec']['template']['spec']['containers'][0]['image']}")
+              print('[SUCCESS] Deployment config validated')
+          EOF
         fi
     
     - name: Check service configuration
@@ -472,13 +472,13 @@ EOF
         echo "========================================="
         if [ -f "k8s/service.yaml" ]; then
           python << 'EOF'
-import yaml
-with open('k8s/service.yaml') as f:
-    config = yaml.safe_load(f)
-    print(f"Service type: {config['spec']['type']}")
-    print(f"Port: {config['spec']['ports'][0]['port']}")
-    print('[SUCCESS] Service config validated')
-EOF
+          import yaml
+          with open('k8s/service.yaml') as f:
+              config = yaml.safe_load(f)
+              print(f"Service type: {config['spec']['type']}")
+              print(f"Port: {config['spec']['ports'][0]['port']}")
+              print('[SUCCESS] Service config validated')
+          EOF
         fi
     
     - name: Stage 8 Summary
