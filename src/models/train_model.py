@@ -39,6 +39,49 @@ from mlflow_config import (
 )
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
+import mlflow.data
+from mlflow.data.pandas_dataset import PandasDataset
+import subprocess
+
+
+def get_git_revision_hash():
+    """Get the current git commit hash."""
+    try:
+        return subprocess.check_output(['git', 'rev-parse', 'HEAD']).strip().decode('ascii')
+    except Exception:
+        return "unknown"
+
+
+def log_dataset_to_mlflow(df, path, context="training"):
+    """
+    Log a dataset to MLflow with DVC versioning info.
+    
+    Args:
+        df: Pandas DataFrame
+        path: Path to the dataset file
+        context: Context of usage ('training' or 'validation')
+    """
+    try:
+        # Get git revision
+        git_rev = get_git_revision_hash()
+        
+        # Create MLflow dataset
+        dataset = mlflow.data.from_pandas(
+            df, 
+            source=path, 
+            name=os.path.basename(path),
+            targets="target" 
+        )
+        
+        # Log input to MLflow
+        mlflow.log_input(dataset, context=context)
+        
+        # Log DVC tags
+        mlflow.set_tag(f"dvc.{context}.path", path)
+        mlflow.set_tag(f"dvc.{context}.git_commit", git_rev)
+        
+    except Exception as e:
+        print(f"Warning: Failed to log dataset to MLflow: {e}")
 
 
 def load_data(train_path, test_path):
@@ -256,6 +299,10 @@ def train_all_models(
     for model_name in models_to_train:
         with mlflow.start_run(run_name=model_name.replace("_", " ").title()):
             print_run_info()
+
+            # Log datasets
+            log_dataset_to_mlflow(pd.concat([X_train, y_train], axis=1), "data/processed/features_train.csv", "training")
+            log_dataset_to_mlflow(pd.concat([X_test, y_test], axis=1), "data/processed/features_test.csv", "validation")
 
             # Train model
             result = train_single_model(
