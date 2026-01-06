@@ -11,7 +11,7 @@
 MLOps Experimental Learning Assignment: End-to-End ML Model Development, CI/CD, and Production Deployment
 
 ### Objective
-Design, develop, and deploy a scalable and reproducible machine learning solution utilizing modern MLOps best practices. The assignment emphasizes practical automation, experiment tracking, CI/CD pipelines, containerization, cloud deployment, and monitoring—mirroring real-world production scenarios.
+Design, develop, and deploy a scalable and reproducible machine learning solution utilizing modern MLOps best practices. The assignment emphasizes practical automation, experiment tracking, CI/CD pipelines, containerization, cloud deployment, and monitoring -- mirroring real-world production scenarios.
 
 ---
 
