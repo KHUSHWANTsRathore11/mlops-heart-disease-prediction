@@ -438,14 +438,9 @@ jobs:
         echo "STAGE 8.2: Deployment Configuration"
         echo "========================================="
         if [ -f "k8s/deployment.yaml" ]; then
-          python << 'EOF'
-          import yaml
-          with open('k8s/deployment.yaml') as f:
-              config = yaml.safe_load(f)
-              print(f"Replicas: {config['spec']['replicas']}")
-              print(f"Image: {config['spec']['template']['spec']['containers'][0]['image']}")
-              print('[SUCCESS] Deployment config validated')
-          EOF
+          python tests/test_k8s_deployment.py
+        else
+          echo "[INFO] Skipping deployment check (k8s/deployment.yaml not found)"
         fi
     
     - name: Check service configuration
