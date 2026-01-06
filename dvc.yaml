@@ -30,4 +30,14 @@ stages:
       - metrics/training_metrics.json:
           cache: false
 
+<<<<<<< HEAD
+  register_model:
+    cmd: python src/models/register_models.py --threshold 0.8
+    deps:
+      - src/models/register_models.py
+      - metrics/training_metrics.json
+      - models/model.pkl
+
+=======
+>>>>>>> origin/develop
 

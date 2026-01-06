@@ -33,3 +33,11 @@ gunicorn==21.2.0
 # Utilities
 python-dotenv==1.2.1
 PyYAML==6.0.3
+<<<<<<< HEAD
+
+# API
+fastapi==0.104.1
+uvicorn==0.24.0
+pydantic==2.5.2
+=======
+>>>>>>> origin/develop

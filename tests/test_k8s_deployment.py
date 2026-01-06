@@ -10,9 +10,13 @@ def test_deployment_config():
         with open("k8s/deployment.yaml") as f:
             config = yaml.safe_load(f)
             print(f"Replicas: {config['spec']['replicas']}")
+<<<<<<< HEAD
+            print(f"Image: {config['spec']['template']['spec']['containers'][0]['image']}")
+=======
             print(
                 f"Image: {config['spec']['template']['spec']['containers'][0]['image']}"
             )
+>>>>>>> origin/develop
             print("[SUCCESS] Deployment config validated")
         return 0
     except Exception as e:

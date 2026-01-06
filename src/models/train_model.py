@@ -10,10 +10,18 @@ Usage:
 import argparse
 import json
 import os
+<<<<<<< HEAD
+import subprocess
+=======
+>>>>>>> origin/develop
 from pathlib import Path
 
 import joblib
 import mlflow
+<<<<<<< HEAD
+import mlflow.data
+=======
+>>>>>>> origin/develop
 import mlflow.sklearn
 import pandas as pd
 
@@ -41,6 +49,46 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 
 
+<<<<<<< HEAD
+def get_git_revision_hash():
+    """Get the current git commit hash."""
+    try:
+        return subprocess.check_output(["git", "rev-parse", "HEAD"]).strip().decode("ascii")
+    except Exception:
+        return "unknown"
+
+
+def log_dataset_to_mlflow(df, path, context="training"):
+    """
+    Log a dataset to MLflow with DVC versioning info.
+
+    Args:
+        df: Pandas DataFrame
+        path: Path to the dataset file
+        context: Context of usage ('training' or 'validation')
+    """
+    try:
+        # Get git revision
+        git_rev = get_git_revision_hash()
+
+        # Create MLflow dataset
+        dataset = mlflow.data.from_pandas(
+            df, source=path, name=os.path.basename(path), targets="target"
+        )
+
+        # Log input to MLflow
+        mlflow.log_input(dataset, context=context)
+
+        # Log DVC tags
+        mlflow.set_tag(f"dvc.{context}.path", path)
+        mlflow.set_tag(f"dvc.{context}.git_commit", git_rev)
+
+    except Exception as e:
+        print(f"Warning: Failed to log dataset to MLflow: {e}")
+
+
+=======
+>>>>>>> origin/develop
 def load_data(train_path, test_path):
     """
     Load training and test data.
@@ -257,6 +305,21 @@ def train_all_models(
         with mlflow.start_run(run_name=model_name.replace("_", " ").title()):
             print_run_info()
 
+<<<<<<< HEAD
+            # Log datasets
+            log_dataset_to_mlflow(
+                pd.concat([X_train, y_train], axis=1),
+                "data/processed/features_train.csv",
+                "training",
+            )
+            log_dataset_to_mlflow(
+                pd.concat([X_test, y_test], axis=1),
+                "data/processed/features_test.csv",
+                "validation",
+            )
+
+=======
+>>>>>>> origin/develop
             # Train model
             result = train_single_model(
                 model_name, X_train, y_train, X_test, y_test, feature_names, output_dir

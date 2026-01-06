@@ -2,7 +2,10 @@
 Tests for model training functionality.
 """
 import joblib
+<<<<<<< HEAD
+=======
 import pandas as pd
+>>>>>>> origin/develop
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import cross_val_score
@@ -172,6 +175,8 @@ class TestCrossValidation:
             scores = cross_val_score(model, X, y, cv=3, scoring=metric)
             assert len(scores) == 3
             assert all(0 <= score <= 1 for score in scores)
+<<<<<<< HEAD
+=======
 
 
 class TestSavedModel:
@@ -200,3 +205,4 @@ class TestSavedModel:
             predictions = model.predict(X_test)
             assert len(predictions) == len(X_test)
             assert all(p in [0, 1] for p in predictions)
+>>>>>>> origin/develop

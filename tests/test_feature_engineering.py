@@ -99,6 +99,8 @@ class TestHeartDiseasePreprocessor:
 class TestCleanData:
     """Test cases for clean_data function"""
 
+<<<<<<< HEAD
+=======
     def test_clean_data_no_missing_values(self):
         """Test that cleaned data has no missing values"""
         # Load actual data
@@ -110,6 +112,7 @@ class TestCleanData:
             # Check no missing values
             assert df_clean.isnull().sum().sum() == 0
 
+>>>>>>> origin/develop
     def test_clean_data_target_binary(self):
         """Test that target is converted to binary"""
         # Create sample data with multi-class target
@@ -162,6 +165,8 @@ class TestTrainTestSplit:
         assert abs(train_ratio - test_ratio) < 0.1
 
 
+<<<<<<< HEAD
+=======
 class TestFeatureEngineeringIntegration:
     """Integration tests for the complete feature engineering pipeline"""
 
@@ -214,5 +219,6 @@ class TestFeatureEngineeringIntegration:
             assert len(train_ids.intersection(test_ids)) == 0, "Data leakage detected!"
 
 
+>>>>>>> origin/develop
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

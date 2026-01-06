@@ -1,6 +1,8 @@
 """
 Tests for data loading and validation.
 """
+<<<<<<< HEAD
+=======
 import pandas as pd
 
 
@@ -25,6 +27,7 @@ class TestDataLoading:
             expected_columns = ["age", "sex", "cp", "trestbps", "chol", "target"]
             for col in expected_columns:
                 assert col in df.columns, f"Expected column '{col}' not found"
+>>>>>>> origin/develop
 
 
 class TestDataValidation:
@@ -82,6 +85,8 @@ class TestDataSplitting:
 
         actual_ratio = len(X_test) / (len(X_train) + len(X_test))
         assert abs(actual_ratio - test_size) < 0.02  # Within 2%
+<<<<<<< HEAD
+=======
 
 
 class TestProcessedData:
@@ -111,3 +116,4 @@ class TestProcessedData:
                 if col in train_df.columns:
                     assert train_df[col].min() > -10, f"{col} might not be scaled"
                     assert train_df[col].max() < 10, f"{col} might not be scaled"
+>>>>>>> origin/develop
