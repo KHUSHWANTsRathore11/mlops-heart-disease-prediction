@@ -279,28 +279,28 @@ jobs:
         echo "STAGE 5.3: Model Inference Test"
         echo "========================================="
         if [ -f "models/model.pkl" ] && [ -f "models/preprocessor.pkl" ]; then
-          python -c "
-import joblib
-import numpy as np
-import pandas as pd
+          python << 'EOF'
+          import joblib
+          import numpy as np
+          import pandas as pd
 
-model = joblib.load('models/model.pkl')
-preprocessor = joblib.load('models/preprocessor.pkl')
+          model = joblib.load('models/model.pkl')
+          preprocessor = joblib.load('models/preprocessor.pkl')
 
-# Create sample input
-sample = pd.DataFrame([{
-    'age': 63, 'sex': 1, 'cp': 3, 'trestbps': 145,
-    'chol': 233, 'fbs': 1, 'restecg': 0, 'thalach': 150,
-    'exang': 0, 'oldpeak': 2.3, 'slope': 0, 'ca': 0, 'thal': 1
-}])
+          # Create sample input
+          sample = pd.DataFrame([{
+              'age': 63, 'sex': 1, 'cp': 3, 'trestbps': 145,
+              'chol': 233, 'fbs': 1, 'restecg': 0, 'thalach': 150,
+              'exang': 0, 'oldpeak': 2.3, 'slope': 0, 'ca': 0, 'thal': 1
+          }])
 
-# Make prediction
-pred = model.predict(sample)
-prob = model.predict_proba(sample)
-print(f'Prediction: {pred[0]}')
-print(f'Probability: {prob[0]}')
-print('[SUCCESS] Model inference working')
-          "
+          # Make prediction
+          pred = model.predict(sample)
+          prob = model.predict_proba(sample)
+          print(f'Prediction: {pred[0]}')
+          print(f'Probability: {prob[0]}')
+          print('[SUCCESS] Model inference working')
+          EOF
         else
           echo "[INFO] Skipping inference test (model files not available)"
         fi
@@ -347,15 +347,15 @@ print('[SUCCESS] Model inference working')
         echo "========================================="
         echo "STAGE 6.2: API Endpoints Check"
         echo "========================================="
-        python -c "
-from app.main import app
+        python << 'EOF'
+        from app.main import app
 
-with app.app_context():
-    print('Available endpoints:')
-    for rule in app.url_map.iter_rules():
-        print(f'  {rule.endpoint}: {rule.rule} [{rule.methods}]')
-    print('[SUCCESS] API endpoints validated')
-        "
+        with app.app_context():
+            print('Available endpoints:')
+            for rule in app.url_map.iter_rules():
+                print(f'  {rule.endpoint}: {rule.rule} [{rule.methods}]')
+            print('[SUCCESS] API endpoints validated')
+        EOF
     
     - name: Validate monitoring scripts
       run: |
@@ -457,14 +457,14 @@ with app.app_context():
         echo "STAGE 8.2: Deployment Configuration"
         echo "========================================="
         if [ -f "k8s/deployment.yaml" ]; then
-          python -c "
-import yaml
-with open('k8s/deployment.yaml') as f:
-    config = yaml.safe_load(f)
-    print(f\"Replicas: {config['spec']['replicas']}\")
-    print(f\"Image: {config['spec']['template']['spec']['containers'][0]['image']}\")
-    print('[SUCCESS] Deployment config validated')
-          "
+          python << 'EOF'
+          import yaml
+          with open('k8s/deployment.yaml') as f:
+              config = yaml.safe_load(f)
+              print(f"Replicas: {config['spec']['replicas']}")
+              print(f"Image: {config['spec']['template']['spec']['containers'][0]['image']}")
+              print('[SUCCESS] Deployment config validated')
+          EOF
         fi
     
     - name: Check service configuration
@@ -473,14 +473,14 @@ with open('k8s/deployment.yaml') as f:
         echo "STAGE 8.3: Service Configuration"
         echo "========================================="
         if [ -f "k8s/service.yaml" ]; then
-          python -c "
-import yaml
-with open('k8s/service.yaml') as f:
-    config = yaml.safe_load(f)
-    print(f\"Service type: {config['spec']['type']}\")
-    print(f\"Port: {config['spec']['ports'][0]['port']}\")
-    print('[SUCCESS] Service config validated')
-          "
+          python << 'EOF'
+          import yaml
+          with open('k8s/service.yaml') as f:
+              config = yaml.safe_load(f)
+              print(f"Service type: {config['spec']['type']}")
+              print(f"Port: {config['spec']['ports'][0]['port']}")
+              print('[SUCCESS] Service config validated')
+          EOF
         fi
     
     - name: Stage 8 Summary
