@@ -1,8 +1,6 @@
 # MLOps (S1-25_AIMLCZG523)
 ## Assignment I
 
-**Total Marks:** 50
-
 ---
 
 ## Overview
@@ -11,7 +9,7 @@
 MLOps Experimental Learning Assignment: End-to-End ML Model Development, CI/CD, and Production Deployment
 
 ### Objective
-Design, develop, and deploy a scalable and reproducible machine learning solution utilizing modern MLOps best practices. The assignment emphasizes practical automation, experiment tracking, CI/CD pipelines, containerization, cloud deployment, and monitoring—mirroring real-world production scenarios.
+Design, develop, and deploy a scalable and reproducible machine learning solution utilizing modern MLOps best practices. The assignment emphasizes practical automation, experiment tracking, CI/CD pipelines, containerization, cloud deployment, and monitoring -- mirroring real-world production scenarios.
 
 ---
 
@@ -32,31 +30,31 @@ Build a machine learning classifier to predict the risk of heart disease based o
 
 ## Assignment Tasks
 
-### 1. Data Acquisition & Exploratory Data Analysis (EDA) **[5 marks]**
+### 1. Data Acquisition & Exploratory Data Analysis (EDA) 
 
 - Obtain the dataset (provide download script or instructions)
 - Clean and preprocess the data (handle missing values, encode features)
 - Perform EDA with professional visualizations (histograms, correlation heatmaps, class balance)
 
-### 2. Feature Engineering & Model Development **[8 marks]**
+### 2. Feature Engineering & Model Development 
 
 - Prepare the final ML features (scaling and encoding)
 - Build and train at least two classification models (e.g., Logistic Regression and Random Forest)
 - Document model selection and tuning process
 - Evaluate using cross-validation and relevant metrics (accuracy, precision, recall, ROC-AUC)
 
-### 3. Experiment Tracking **[5 marks]**
+### 3. Experiment Tracking 
 
 - Integrate MLflow (or a similar tool) for experiment tracking
 - Log parameters, metrics, artifacts, and plots for all runs
 
-### 4. Model Packaging & Reproducibility **[7 marks]**
+### 4. Model Packaging & Reproducibility 
 
 - Save the final model in a reusable format (e.g., MLflow, pickle, ONNX)
 - Write a clean `requirements.txt` (or Conda env file)
 - Provide a preprocessing pipeline/transformers to ensure full reproducibility
 
-### 5. CI/CD Pipeline & Automated Testing **[8 marks]**
+### 5. CI/CD Pipeline & Automated Testing 
 
 - Write unit tests for data processing and model code (Pytest or unittest)
 - Create a GitHub Actions (or Jenkins) pipeline that includes:
@@ -65,25 +63,25 @@ Build a machine learning classifier to predict the risk of heart disease based o
   - Model training steps
 - Artifacts/logging for each workflow run
 
-### 6. Model Containerization **[5 marks]**
+### 6. Model Containerization 
 
 - Build a Docker container for the model-serving API (Flask or FastAPI is recommended)
 - Expose `/predict` endpoint, accept JSON input, return prediction and confidence
 - The container must be built and run locally with sample input
 
-### 7. Production Deployment **[7 marks]**
+### 7. Production Deployment 
 
 - Deploy the Dockerized API to a public cloud or local Kubernetes (GKE, EKS, AKS, or Minikube/Docker Desktop)
 - Use a deployment manifest or Helm chart
 - Expose via Load Balancer or Ingress
 - Verify endpoints and provide deployment screenshots
 
-### 8. Monitoring & Logging **[3 marks]**
+### 8. Monitoring & Logging 
 
 - Integrate logging of API requests
 - Demonstrate simple monitoring (Prometheus + Grafana or API metrics/logs dashboard)
 
-### 9. Documentation & Reporting **[2 marks]**
+### 9. Documentation & Reporting 
 
 Submit a professional Markdown or PDF report including:
 

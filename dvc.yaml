@@ -1,0 +1,43 @@
+stages:
+  clean_data:
+    cmd: python src/data/preprocessing.py
+    deps:
+      - src/data/preprocessing.py
+      - data/raw/
+    outs:
+      - data/processed/heart_disease_clean.csv
+  
+  engineer_features:
+    cmd: python src/features/engineer_features.py
+    deps:
+      - src/features/engineer_features.py
+      - data/processed/heart_disease_clean.csv
+    outs:
+      - data/processed/features_train.csv
+      - data/processed/features_test.csv
+
+  train_model:
+    cmd: python src/models/train_model.py --train-path data/processed/features_train.csv --test-path data/processed/features_test.csv --output-path models/model.pkl --metrics-path metrics/training_metrics.json
+    deps:
+      - src/models/train_model.py
+      - src/models/evaluation.py
+      - src/models/mlflow_config.py
+      - data/processed/features_train.csv
+      - data/processed/features_test.csv
+    outs:
+      - models/model.pkl
+    metrics:
+      - metrics/training_metrics.json:
+          cache: false
+
+<<<<<<< HEAD
+  register_model:
+    cmd: python src/models/register_models.py --threshold 0.8
+    deps:
+      - src/models/register_models.py
+      - metrics/training_metrics.json
+      - models/model.pkl
+
+=======
+>>>>>>> origin/develop
+

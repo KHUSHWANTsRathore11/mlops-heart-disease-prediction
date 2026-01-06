@@ -1,0 +1,62 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Data and models (will be copied separately)
+data/raw/
+data/processed/*.png
+
+# MLflow
+mlruns/
+mlflow.db
+
+# DVC
+.dvc/
+*.dvc
+
+# Git
+.git/
+.gitignore
+
+# Tests
+tests/
+.pytest_cache/
+htmlcov/
+.coverage
+*.coverage
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Notebooks
+notebooks/
+
+# CI/CD
+.github/
+
+# Deployment configs (optional)
+deployment/
+
+# Misc
+.DS_Store
+.env
+*.log

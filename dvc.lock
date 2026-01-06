@@ -1,0 +1,123 @@
+schema: '2.0'
+stages:
+  clean_data:
+    cmd: python src/data/preprocessing.py
+    deps:
+    - path: data/raw/
+      hash: md5
+      md5: 07fad6e7c0967001582b60314dedb214.dir
+      size: 89787
+      nfiles: 5
+    - path: src/data/preprocessing.py
+      hash: md5
+<<<<<<< HEAD
+      md5: 9d8cd05cb7d287d9aa5b78b89c12f1b7
+      size: 7474
+    outs:
+    - path: data/processed/heart_disease_clean.csv
+      hash: md5
+      md5: 35a400a863c0635b6161bf61a7261b20
+=======
+      md5: e6b1bc027607e63cd1a90cbc50f6e928
+      size: 7809
+    outs:
+    - path: data/processed/heart_disease_clean.csv
+      hash: md5
+      md5: 3b3d458790a8d6c73e31833c26a49e17
+>>>>>>> origin/develop
+      size: 84215
+  engineer_features:
+    cmd: python src/features/engineer_features.py
+    deps:
+    - path: data/processed/heart_disease_clean.csv
+      hash: md5
+<<<<<<< HEAD
+      md5: 35a400a863c0635b6161bf61a7261b20
+      size: 84215
+    - path: src/features/engineer_features.py
+      hash: md5
+      md5: 0be01b8e71ffe7f1f4bba6d4b9f236d3
+      size: 3686
+=======
+      md5: 3b3d458790a8d6c73e31833c26a49e17
+      size: 84215
+    - path: src/features/engineer_features.py
+      hash: md5
+      md5: e7631ae90ec5445246729ac9a593b71f
+      size: 3715
+>>>>>>> origin/develop
+    outs:
+    - path: data/processed/features_test.csv
+      hash: md5
+      md5: 926aef0d143d1072174cd47cd21ca41f
+      size: 51380
+    - path: data/processed/features_train.csv
+      hash: md5
+      md5: 9d423014e25ff4691f1f0fc9cc9b70c3
+      size: 205196
+  train_model:
+    cmd: python src/models/train_model.py --train-path 
+      data/processed/features_train.csv --test-path 
+      data/processed/features_test.csv --output-path models/model.pkl 
+      --metrics-path metrics/training_metrics.json
+    deps:
+    - path: data/processed/features_test.csv
+      hash: md5
+      md5: 926aef0d143d1072174cd47cd21ca41f
+      size: 51380
+    - path: data/processed/features_train.csv
+      hash: md5
+      md5: 9d423014e25ff4691f1f0fc9cc9b70c3
+      size: 205196
+    - path: src/models/evaluation.py
+      hash: md5
+<<<<<<< HEAD
+      md5: 772103f1d4412ee0886929539c5259ab
+      size: 7598
+    - path: src/models/mlflow_config.py
+      hash: md5
+      md5: 6b1c3654bf3be54e1d5e9b7935f69d06
+      size: 2919
+    - path: src/models/train_model.py
+      hash: md5
+      md5: a8fdd2cd3f83bddf464786cb7cfa7050
+      size: 12715
+=======
+      md5: 03b75e263775bf48260b7bf79e0a1624
+      size: 7856
+    - path: src/models/mlflow_config.py
+      hash: md5
+      md5: dcb65cb2bfd89e4e8ccc620d4fe20f43
+      size: 2969
+    - path: src/models/train_model.py
+      hash: md5
+      md5: 0fa30227b9aa38a1e2222096b6f93584
+      size: 11542
+>>>>>>> origin/develop
+    outs:
+    - path: metrics/training_metrics.json
+      hash: md5
+      md5: c79f6f46fdafaad7558ad814a882323e
+      size: 322
+    - path: models/model.pkl
+      hash: md5
+      md5: c4e7e0269a38fbbaa3b65a229bb5362d
+      size: 1312009
+<<<<<<< HEAD
+  register_model:
+    cmd: python src/models/register_models.py --threshold 0.8
+    deps:
+    - path: metrics/training_metrics.json
+      hash: md5
+      md5: c79f6f46fdafaad7558ad814a882323e
+      size: 322
+    - path: models/model.pkl
+      hash: md5
+      md5: c4e7e0269a38fbbaa3b65a229bb5362d
+      size: 1312009
+    - path: src/models/register_models.py
+      hash: md5
+      md5: 92d7e7acbdbfd6b8d3c22c4c7734932d
+      size: 4649
+=======
+>>>>>>> origin/develop
