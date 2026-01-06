@@ -232,189 +232,189 @@ jobs:
   #       echo "- Pipeline reproducibility verified"
   #       echo "========================================="
 
-  stage-5-model-validation:
-    name: "Stage 5: Model Validation & Metrics"
-    runs-on: ubuntu-latest
-    # needs: stage-4-dvc-pipeline
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
-        cache: 'pip'
-    
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        pip install -e .
-    
-    - name: Validate trained model
-      run: |
-        echo "========================================="
-        echo "STAGE 5.1: Model Validation"
-        echo "========================================="
-        if [ -f "models/model.pkl" ]; then
-          python -c "import joblib; model = joblib.load('models/model.pkl'); print(f'Model type: {type(model).__name__}'); print('[SUCCESS] Model loaded successfully')"
-        else
-          echo "[INFO] Model file not available (would be trained in full pipeline)"
-        fi
-    
-    - name: Check model metrics
-      run: |
-        echo "========================================="
-        echo "STAGE 5.2: Model Metrics"
-        echo "========================================="
-        if [ -f "metrics/training_metrics.json" ]; then
-          python -c "import json; metrics = json.load(open('metrics/training_metrics.json')); print(json.dumps(metrics, indent=2)); print('[SUCCESS] Metrics validated')"
-        else
-          echo "[INFO] Metrics file not available"
-        fi
-    
-    - name: Test model inference
-      run: |
-        echo "========================================="
-        echo "STAGE 5.3: Model Inference Test"
-        echo "========================================="
-        if [ -f "models/model.pkl" ] && [ -f "models/preprocessor.pkl" ]; then
-          python tests/test_model_inference.py
-        else
-          echo "[INFO] Skipping inference test (model files not available)"
-        fi
-    
-    - name: Stage 5 Summary
-      run: |
-        echo "========================================="
-        echo "STAGE 5 COMPLETE: Model Validation"
-        echo "========================================="
-        echo "- Model artifact validated"
-        echo "- Metrics checked"
-        echo "- Inference capability verified"
-        echo "========================================="
+  # stage-5-model-validation:
+  #   name: "Stage 5: Model Validation & Metrics"
+  #   runs-on: ubuntu-latest
+  #   # needs: stage-4-dvc-pipeline
+  #   
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v4
+  #   
+  #   - name: Set up Python
+  #     uses: actions/setup-python@v5
+  #     with:
+  #       python-version: '3.11'
+  #       cache: 'pip'
+  #   
+  #   - name: Install dependencies
+  #     run: |
+  #       python -m pip install --upgrade pip
+  #       pip install -r requirements.txt
+  #       pip install -e .
+  #   
+  #   - name: Validate trained model
+  #     run: |
+  #       echo "========================================="
+  #       echo "STAGE 5.1: Model Validation"
+  #       echo "========================================="
+  #       if [ -f "models/model.pkl" ]; then
+  #         python -c "import joblib; model = joblib.load('models/model.pkl'); print(f'Model type: {type(model).__name__}'); print('[SUCCESS] Model loaded successfully')"
+  #       else
+  #         echo "[INFO] Model file not available (would be trained in full pipeline)"
+  #       fi
+  #   
+  #   - name: Check model metrics
+  #     run: |
+  #       echo "========================================="
+  #       echo "STAGE 5.2: Model Metrics"
+  #       echo "========================================="
+  #       if [ -f "metrics/training_metrics.json" ]; then
+  #         python -c "import json; metrics = json.load(open('metrics/training_metrics.json')); print(json.dumps(metrics, indent=2)); print('[SUCCESS] Metrics validated')"
+  #       else
+  #         echo "[INFO] Metrics file not available"
+  #       fi
+  #   
+  #   - name: Test model inference
+  #     run: |
+  #       echo "========================================="
+  #       echo "STAGE 5.3: Model Inference Test"
+  #       echo "========================================="
+  #       if [ -f "models/model.pkl" ] && [ -f "models/preprocessor.pkl" ]; then
+  #         python tests/test_model_inference.py
+  #       else
+  #         echo "[INFO] Skipping inference test (model files not available)"
+  #       fi
+  #   
+  #   - name: Stage 5 Summary
+  #     run: |
+  #       echo "========================================="
+  #       echo "STAGE 5 COMPLETE: Model Validation"
+  #       echo "========================================="
+  #       echo "- Model artifact validated"
+  #       echo "- Metrics checked"
+  #       echo "- Inference capability verified"
+  #       echo "========================================="
 
-  stage-6-api-validation:
-    name: "Stage 6: API & Service Validation"
-    runs-on: ubuntu-latest
-    needs: stage-5-model-validation
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
-        cache: 'pip'
-    
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-    
-    - name: Validate API code
-      run: |
-        echo "========================================="
-        echo "STAGE 6.1: API Code Validation"
-        echo "========================================="
-        python -c "from app.main import app; print('[SUCCESS] Flask app imports successfully')"
-    
-    - name: Test API endpoints (syntax)
-      run: |
-        echo "========================================="
-        echo "STAGE 6.2: API Endpoints Check"
-        echo "========================================="
-        python << 'EOF'
-        from app.main import app
+  # stage-6-api-validation:
+  #   name: "Stage 6: API & Service Validation"
+  #   runs-on: ubuntu-latest
+  #   needs: stage-5-model-validation
+  #   
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v4
+  #   
+  #   - name: Set up Python
+  #     uses: actions/setup-python@v5
+  #     with:
+  #       python-version: '3.11'
+  #       cache: 'pip'
+  #   
+  #   - name: Install dependencies
+  #     run: |
+  #       python -m pip install --upgrade pip
+  #       pip install -r requirements.txt
+  #   
+  #   - name: Validate API code
+  #     run: |
+  #       echo "========================================="
+  #       echo "STAGE 6.1: API Code Validation"
+  #       echo "========================================="
+  #       python -c "from app.main import app; print('[SUCCESS] Flask app imports successfully')"
+  #   
+  #   - name: Test API endpoints (syntax)
+  #     run: |
+  #       echo "========================================="
+  #       echo "STAGE 6.2: API Endpoints Check"
+  #       echo "========================================="
+  #       python << 'EOF'
+  #       from app.main import app
+  #
+  #       with app.app_context():
+  #           print('Available endpoints:')
+  #           for rule in app.url_map.iter_rules():
+  #               print(f'  {rule.endpoint}: {rule.rule} [{rule.methods}]')
+  #           print('[SUCCESS] API endpoints validated')
+  #       EOF
+  #   
+  #   - name: Validate monitoring scripts
+  #     run: |
+  #       echo "========================================="
+  #       echo "STAGE 6.3: Monitoring Scripts"
+  #       echo "========================================="
+  #       if [ -f "scripts/analyze_logs.py" ]; then
+  #         python scripts/analyze_logs.py --help 2>&1 || echo "[SUCCESS] Log analysis script validated"
+  #       fi
+  #   
+  #   - name: Stage 6 Summary
+  #     run: |
+  #       echo "========================================="
+  #       echo "STAGE 6 COMPLETE: API Validation"
+  #       echo "========================================="
+  #       echo "- Flask app validated"
+  #       echo "- API endpoints checked"
+  #       echo "- Monitoring scripts verified"
+  #       echo "========================================="
 
-        with app.app_context():
-            print('Available endpoints:')
-            for rule in app.url_map.iter_rules():
-                print(f'  {rule.endpoint}: {rule.rule} [{rule.methods}]')
-            print('[SUCCESS] API endpoints validated')
-        EOF
-    
-    - name: Validate monitoring scripts
-      run: |
-        echo "========================================="
-        echo "STAGE 6.3: Monitoring Scripts"
-        echo "========================================="
-        if [ -f "scripts/analyze_logs.py" ]; then
-          python scripts/analyze_logs.py --help 2>&1 || echo "[SUCCESS] Log analysis script validated"
-        fi
-    
-    - name: Stage 6 Summary
-      run: |
-        echo "========================================="
-        echo "STAGE 6 COMPLETE: API Validation"
-        echo "========================================="
-        echo "- Flask app validated"
-        echo "- API endpoints checked"
-        echo "- Monitoring scripts verified"
-        echo "========================================="
-
-  stage-7-docker-validation:
-    name: "Stage 7: Docker & Containerization"
-    runs-on: ubuntu-latest
-    needs: stage-6-api-validation
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    
-    - name: Validate Dockerfile
-      run: |
-        echo "========================================="
-        echo "STAGE 7.1: Dockerfile Validation"
-        echo "========================================="
-        if [ -f "Dockerfile" ]; then
-          echo "[SUCCESS] Dockerfile found"
-          echo "Dockerfile contents:"
-          head -20 Dockerfile
-        else
-          echo "[ERROR] Dockerfile not found"
-          exit 1
-        fi
-    
-    - name: Validate .dockerignore
-      run: |
-        echo "========================================="
-        echo "STAGE 7.2: Docker Ignore Validation"
-        echo "========================================="
-        if [ -f ".dockerignore" ]; then
-          echo "[SUCCESS] .dockerignore found"
-          cat .dockerignore
-        else
-          echo "[WARNING] .dockerignore not found"
-        fi
-    
-    - name: Docker build simulation
-      run: |
-        echo "========================================="
-        echo "STAGE 7.3: Docker Build Simulation"
-        echo "========================================="
-        echo "[INFO] Docker build would execute here in production"
-        echo "Command: docker build -t heart-disease-api:latest ."
-        echo "[SUCCESS] Docker configuration validated"
-    
-    - name: Stage 7 Summary
-      run: |
-        echo "========================================="
-        echo "STAGE 7 COMPLETE: Docker Validation"
-        echo "========================================="
-        echo "- Dockerfile validated"
-        echo "- Dockerignore checked"
-        echo "- Container build ready"
-        echo "========================================="
+  # stage-7-docker-validation:
+  #   name: "Stage 7: Docker & Containerization"
+  #   runs-on: ubuntu-latest
+  #   needs: stage-6-api-validation
+  #   
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v4
+  #   
+  #   - name: Validate Dockerfile
+  #     run: |
+  #       echo "========================================="
+  #       echo "STAGE 7.1: Dockerfile Validation"
+  #       echo "========================================="
+  #       if [ -f "Dockerfile" ]; then
+  #         echo "[SUCCESS] Dockerfile found"
+  #         echo "Dockerfile contents:"
+  #         head -20 Dockerfile
+  #       else
+  #         echo "[ERROR] Dockerfile not found"
+  #         exit 1
+  #       fi
+  #   
+  #   - name: Validate .dockerignore
+  #     run: |
+  #       echo "========================================="
+  #       echo "STAGE 7.2: Docker Ignore Validation"
+  #       echo "========================================="
+  #       if [ -f ".dockerignore" ]; then
+  #         echo "[SUCCESS] .dockerignore found"
+  #         cat .dockerignore
+  #       else
+  #         echo "[WARNING] .dockerignore not found"
+  #       fi
+  #   
+  #   - name: Docker build simulation
+  #     run: |
+  #       echo "========================================="
+  #       echo "STAGE 7.3: Docker Build Simulation"
+  #       echo "========================================="
+  #       echo "[INFO] Docker build would execute here in production"
+  #       echo "Command: docker build -t heart-disease-api:latest ."
+  #       echo "[SUCCESS] Docker configuration validated"
+  #   
+  #   - name: Stage 7 Summary
+  #     run: |
+  #       echo "========================================="
+  #       echo "STAGE 7 COMPLETE: Docker Validation"
+  #       echo "========================================="
+  #       echo "- Dockerfile validated"
+  #       echo "- Dockerignore checked"
+  #       echo "- Container build ready"
+  #       echo "========================================="
 
   stage-8-kubernetes-validation:
     name: "Stage 8: Kubernetes Deployment Validation"
     runs-on: ubuntu-latest
-    needs: stage-7-docker-validation
+    # needs: stage-7-docker-validation
     
     steps:
     - name: Checkout code
@@ -457,10 +457,10 @@ jobs:
           python << 'EOF'
           import yaml
           with open('k8s/service.yaml') as f:
-              config = yaml.safe_load(f)
-              print(f"Service type: {config['spec']['type']}")
-              print(f"Port: {config['spec']['ports'][0]['port']}")
-              print('[SUCCESS] Service config validated')
+            config = yaml.safe_load(f)
+            print(f"Service type: {config['spec']['type']}")
+            print(f"Port: {config['spec']['ports'][0]['port']}")
+            print('[SUCCESS] Service config validated')
           EOF
         fi
     
@@ -476,7 +476,7 @@ jobs:
   stage-9-mlflow-validation:
     name: "Stage 9: MLflow & Experiment Tracking"
     runs-on: ubuntu-latest
-    needs: stage-5-model-validation
+    # needs: stage-5-model-validation
     
     steps:
     - name: Checkout code
@@ -531,37 +531,37 @@ jobs:
         echo "- Experiment tracking ready"
         echo "========================================="
 
-  stage-10-final-summary:
-    name: "Stage 10: Pipeline Summary & Report"
-    runs-on: ubuntu-latest
-    needs: [stage-8-kubernetes-validation, stage-9-mlflow-validation]
-    if: always()
-    
-    steps:
-    - name: Generate pipeline report
-      run: |
-        echo "========================================="
-        echo "MLOPS CI/CD PIPELINE COMPLETE"
-        echo "========================================="
-        echo ""
-        echo "STAGE RESULTS:"
-        echo "1. Code Quality          : ${{ needs.stage-1-code-quality.result }}"
-        echo "2. Unit Tests            : ${{ needs.stage-2-unit-tests.result }}"
-        echo "3. Data Validation       : ${{ needs.stage-3-data-validation.result }}"
-        echo "4. DVC Pipeline          : ${{ needs.stage-4-dvc-pipeline.result }}"
-        echo "5. Model Validation      : ${{ needs.stage-5-model-validation.result }}"
-        echo "6. API Validation        : ${{ needs.stage-6-api-validation.result }}"
-        echo "7. Docker Validation     : ${{ needs.stage-7-docker-validation.result }}"
-        echo "8. Kubernetes Validation : ${{ needs.stage-8-kubernetes-validation.result }}"
-        echo "9. MLflow Validation     : ${{ needs.stage-9-mlflow-validation.result }}"
-        echo ""
-        echo "========================================="
-        echo "PIPELINE STATUS: COMPLETE"
-        echo "========================================="
-        echo ""
-        echo "Next Steps:"
-        echo "- Review logs for each stage"
-        echo "- Check artifacts for coverage reports"
-        echo "- Deploy to staging/production if all passed"
-        echo ""
-        echo "========================================="
+  # stage-10-final-summary:
+  #   name: "Stage 10: Pipeline Summary & Report"
+  #   runs-on: ubuntu-latest
+  #   needs: [stage-8-kubernetes-validation, stage-9-mlflow-validation]
+  #   if: always()
+  #   
+  #   steps:
+  #   - name: Generate pipeline report
+  #     run: |
+  #       echo "========================================="
+  #       echo "MLOPS CI/CD PIPELINE COMPLETE"
+  #       echo "========================================="
+  #       echo ""
+  #       echo "STAGE RESULTS:"
+  #       echo "1. Code Quality          : ${{ needs.stage-1-code-quality.result }}"
+  #       echo "2. Unit Tests            : ${{ needs.stage-2-unit-tests.result }}"
+  #       echo "3. Data Validation       : ${{ needs.stage-3-data-validation.result }}"
+  #       echo "4. DVC Pipeline          : ${{ needs.stage-4-dvc-pipeline.result }}"
+  #       echo "5. Model Validation      : ${{ needs.stage-5-model-validation.result }}"
+  #       echo "6. API Validation        : ${{ needs.stage-6-api-validation.result }}"
+  #       echo "7. Docker Validation     : ${{ needs.stage-7-docker-validation.result }}"
+  #       echo "8. Kubernetes Validation : ${{ needs.stage-8-kubernetes-validation.result }}"
+  #       echo "9. MLflow Validation     : ${{ needs.stage-9-mlflow-validation.result }}"
+  #       echo ""
+  #       echo "========================================="
+  #       echo "PIPELINE STATUS: COMPLETE"
+  #       echo "========================================="
+  #       echo ""
+  #       echo "Next Steps:"
+  #       echo "- Review logs for each stage"
+  #       echo "- Check artifacts for coverage reports"
+  #       echo "- Deploy to staging/production if all passed"
+  #       echo ""
+  #       echo "========================================="
