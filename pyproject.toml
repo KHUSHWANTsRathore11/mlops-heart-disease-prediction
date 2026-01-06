@@ -1,3 +1,22 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mlops-heart-disease-prediction"
+version = "0.1.0"
+description = "MLOps project for heart disease prediction"
+requires-python = ">=3.11"
+readme = "README.md"
+license = {text = "MIT"}
+
+[project.optional-dependencies]
+dev = ["pytest", "pytest-cov", "black", "isort", "flake8"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*", "app*"]
+
 [tool.black]
 line-length = 100
 target-version = ['py311']

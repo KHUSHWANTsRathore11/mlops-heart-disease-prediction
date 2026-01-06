@@ -7,11 +7,15 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-from src.data.preprocessing import HeartDiseasePreprocessor, clean_data, prepare_train_test_split
-
-# Add project root to path
+# Add project root to path BEFORE importing src modules
 project_root = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(project_root))
+
+from src.data.preprocessing import (
+    HeartDiseasePreprocessor,
+    clean_data,
+    prepare_train_test_split,
+)
 
 
 class TestHeartDiseasePreprocessor:
