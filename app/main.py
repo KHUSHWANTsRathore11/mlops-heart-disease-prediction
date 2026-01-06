@@ -7,9 +7,7 @@ a trained machine learning model.
 from flask import Flask, request, jsonify, g
 from flask_cors import CORS
 import joblib
-import numpy as np
 import pandas as pd
-from pathlib import Path
 import logging
 import sys
 import os
@@ -21,8 +19,11 @@ from datetime import datetime
 sys.path.insert(0, os.path.abspath('.'))
 
 # Configure structured logging
+
+
 class JSONFormatter(logging.Formatter):
     """Custom JSON formatter for structured logging"""
+
     def format(self, record):
         log_data = {
             'timestamp': datetime.utcnow().isoformat() + 'Z',
@@ -35,6 +36,7 @@ class JSONFormatter(logging.Formatter):
         if hasattr(record, 'extra_data'):
             log_data.update(record.extra_data)
         return json.dumps(log_data)
+
 
 # Setup logging
 logger = logging.getLogger(__name__)
@@ -61,7 +63,6 @@ metrics = {
 }
 
 # Load model and preprocessor at startup
-import os
 MODEL_DIR = os.getenv("MODEL_DIR", "models")
 MODEL_PATH = os.path.join(MODEL_DIR, "model.pkl")
 PREPROCESSOR_PATH = os.path.join(MODEL_DIR, "preprocessor.pkl")
@@ -71,7 +72,7 @@ try:
     model = joblib.load(MODEL_PATH)
     preprocessor = joblib.load(PREPROCESSOR_PATH)
     logger.info(f"[SUCCESS] Model loaded successfully: {type(model).__name__}")
-    logger.info(f"[SUCCESS] Preprocessor loaded successfully")
+    logger.info("[SUCCESS] Preprocessor loaded successfully")
 except Exception as e:
     logger.error(f"[ERROR] Error loading model: {e}")
     model = None
@@ -79,7 +80,7 @@ except Exception as e:
 
 # Expected feature names
 EXPECTED_FEATURES = [
-    'age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 
+    'age', 'sex', 'cp', 'trestbps', 'chol', 'fbs',
     'restecg', 'thalach', 'exang', 'oldpeak', 'slope', 'ca', 'thal'
 ]
 
@@ -90,7 +91,7 @@ def before_request():
     """Log incoming request and start timer"""
     g.start_time = time.time()
     metrics['total_requests'] += 1
-    
+
     log_record = logging.LogRecord(
         name=logger.name,
         level=logging.INFO,
@@ -115,7 +116,7 @@ def after_request(response):
     if hasattr(g, 'start_time'):
         duration = (time.time() - g.start_time) * 1000  # Convert to ms
         metrics['total_duration_ms'] += duration
-        
+
         log_record = logging.LogRecord(
             name=logger.name,
             level=logging.INFO,
@@ -133,7 +134,7 @@ def after_request(response):
             'duration_ms': round(duration, 2)
         }
         logger.handle(log_record)
-    
+
     return response
 
 
@@ -163,9 +164,9 @@ def health():
 def get_metrics():
     """Prometheus-compatible metrics endpoint"""
     avg_duration = (metrics['total_duration_ms'] / metrics['total_requests']) if metrics['total_requests'] > 0 else 0
-    
+
     uptime = (datetime.utcnow() - datetime.fromisoformat(metrics['start_time'].rstrip('Z'))).total_seconds()
-    
+
     return jsonify({
         'total_requests': metrics['total_requests'],
         'total_predictions': metrics['total_predictions'],
@@ -183,7 +184,7 @@ def get_metrics():
 def predict():
     """
     Prediction endpoint.
-    
+
     Expected JSON format:
     {
         "features": {
@@ -198,18 +199,18 @@ def predict():
         # Check if model is loaded
         if model is None:
             return jsonify({'error': 'Model not loaded'}), 500
-        
+
         # Get JSON data
         data = request.get_json()
-        
+
         if not data or 'features' not in data:
             return jsonify({
                 'error': 'Invalid input format',
                 'expected': {'features': {feat: 'value' for feat in EXPECTED_FEATURES}}
             }), 400
-        
+
         features = data['features']
-        
+
         # Validate all required features are present
         missing_features = [f for f in EXPECTED_FEATURES if f not in features]
         if missing_features:
@@ -217,15 +218,15 @@ def predict():
                 'error': 'Missing required features',
                 'missing': missing_features
             }), 400
-        
+
         # Create DataFrame with features in correct order
         feature_data = {feat: [features[feat]] for feat in EXPECTED_FEATURES}
         input_df = pd.DataFrame(feature_data)
-        
+
         # Make prediction
         prediction = model.predict(input_df)[0]
         probability = model.predict_proba(input_df)[0]
-        
+
         # Determine risk level
         risk_prob = float(probability[1])
         if risk_prob >= 0.7:
@@ -234,7 +235,7 @@ def predict():
             risk_level = "Medium"
         else:
             risk_level = "Low"
-        
+
         # Return prediction
         response = {
             'prediction': int(prediction),
@@ -247,14 +248,14 @@ def predict():
             'model_version': '1.0.0',
             'model_type': type(model).__name__
         }
-        
+
         # Update metrics
         metrics['total_predictions'] += 1
         if prediction == 1:
             metrics['predictions_disease'] += 1
         else:
             metrics['predictions_no_disease'] += 1
-        
+
         # Log prediction with details
         log_record = logging.LogRecord(
             name=logger.name,
@@ -273,12 +274,12 @@ def predict():
             'model_type': type(model).__name__
         }
         logger.handle(log_record)
-        
+
         return jsonify(response), 200
-        
+
     except Exception as e:
         metrics['total_errors'] += 1
-        
+
         log_record = logging.LogRecord(
             name=logger.name,
             level=logging.ERROR,
@@ -295,7 +296,7 @@ def predict():
             'endpoint': '/predict'
         }
         logger.handle(log_record)
-        
+
         return jsonify({
             'error': 'Prediction failed',
             'details': str(e)

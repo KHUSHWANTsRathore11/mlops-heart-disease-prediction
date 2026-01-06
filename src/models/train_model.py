@@ -12,7 +12,6 @@ import os
 import json
 import joblib
 import pandas as pd
-import numpy as np
 import mlflow
 import mlflow.sklearn
 from pathlib import Path
@@ -38,49 +37,49 @@ from mlflow_config import setup_mlflow, log_params, log_metrics, log_artifact, l
 def load_data(train_path, test_path):
     """
     Load training and test data.
-    
+
     Args:
         train_path: Path to training features CSV
         test_path: Path to test features CSV
-        
+
     Returns:
         tuple: (X_train, y_train, X_test, y_test, feature_names)
     """
     print(f"Loading data from {train_path} and {test_path}...")
-    
+
     train_df = pd.read_csv(train_path)
     test_df = pd.read_csv(test_path)
-    
+
     # Assume 'target' is the column name
     target_col = 'target'
-    
+
     # Drop non-feature columns
     drop_cols = ['patient_id', 'timestamp']
     drop_cols = [c for c in drop_cols if c in train_df.columns]
-    
+
     # Separate features and target
     feature_cols = [c for c in train_df.columns if c != target_col and c not in drop_cols]
-    
+
     X_train = train_df[feature_cols]
     y_train = train_df[target_col]
-    
+
     X_test = test_df[feature_cols]
     y_test = test_df[target_col]
-    
+
     print(f"Training set: {X_train.shape[0]} samples, {X_train.shape[1]} features")
     print(f"Test set: {X_test.shape[0]} samples")
     print(f"Features: {', '.join(feature_cols)}")
-    
+
     return X_train, y_train, X_test, y_test, feature_cols
 
 
 def get_model_config(model_type):
     """
     Get model configuration.
-    
+
     Args:
         model_type: Type of model ('logistic_regression' or 'random_forest')
-        
+
     Returns:
         tuple: (model, params_dict)
     """
@@ -92,7 +91,7 @@ def get_model_config(model_type):
             'random_state': 42
         }
         model = LogisticRegression(**params)
-        
+
     elif model_type == 'random_forest':
         params = {
             'n_estimators': 100,
@@ -103,17 +102,17 @@ def get_model_config(model_type):
             'n_jobs': -1
         }
         model = RandomForestClassifier(**params)
-        
+
     else:
         raise ValueError(f"Unknown model type: {model_type}")
-    
+
     return model, params
 
 
 def train_single_model(model_name, X_train, y_train, X_test, y_test, feature_names, output_dir):
     """
     Train a single model with cross-validation and evaluation.
-    
+
     Args:
         model_name: Name of the model ('logistic_regression' or 'random_forest')
         X_train: Training features
@@ -122,17 +121,17 @@ def train_single_model(model_name, X_train, y_train, X_test, y_test, feature_nam
         y_test: Test target
         feature_names: List of feature names
         output_dir: Directory to save artifacts
-        
+
     Returns:
         dict: Results including model, metrics, and artifacts
     """
-    print("\n" + "="*80)
+    print("\n" + "=" * 80)
     print(f"Training {model_name.replace('_', ' ').title()}")
-    print("="*80)
-    
+    print("=" * 80)
+
     # Get model configuration
     model, params = get_model_config(model_name)
-    
+
     # Add metadata to params
     params_to_log = {
         **params,
@@ -141,58 +140,58 @@ def train_single_model(model_name, X_train, y_train, X_test, y_test, feature_nam
         'n_test_samples': X_test.shape[0],
         'n_features': X_train.shape[1]
     }
-    
+
     # Perform cross-validation
     print("\nPerforming 5-fold cross-validation...")
     cv_results = cross_validate_model(model, X_train, y_train, cv=5)
-    
+
     # Train on full training set
     print("\nTraining on full training set...")
     model.fit(X_train, y_train)
-    
+
     # Make predictions
     y_train_pred = model.predict(X_train)
     y_test_pred = model.predict(X_test)
     y_test_proba = model.predict_proba(X_test)[:, 1]
-    
+
     # Calculate metrics
     train_metrics = calculate_metrics(y_train, y_train_pred)
     test_metrics = calculate_metrics(y_test, y_test_pred, y_test_proba)
-    
+
     print_metrics(train_metrics, "Training Metrics")
     print_metrics(test_metrics, "Test Metrics")
-    
+
     # Create output directory
     model_output_dir = Path(output_dir) / model_name
     model_output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # Generate visualizations
     artifacts = {}
-    
+
     # Confusion matrix
     cm_path = model_output_dir / "confusion_matrix.png"
     plot_confusion_matrix(y_test, y_test_pred, save_path=cm_path,
-                         title=f'{model_name.replace("_", " ").title()} - Confusion Matrix')
+                          title=f'{model_name.replace("_", " ").title()} - Confusion Matrix')
     artifacts['confusion_matrix'] = str(cm_path)
-    
+
     # ROC curve
     roc_path = model_output_dir / "roc_curve.png"
     plot_roc_curve(y_test, y_test_proba, save_path=roc_path,
-                  title=f'{model_name.replace("_", " ").title()} - ROC Curve')
+                   title=f'{model_name.replace("_", " ").title()} - ROC Curve')
     artifacts['roc_curve'] = str(roc_path)
-    
+
     # Feature importance (for tree-based models)
     if hasattr(model, 'feature_importances_'):
         fi_path = model_output_dir / "feature_importance.png"
         plot_feature_importance(model, feature_names, save_path=fi_path,
-                               title=f'{model_name.replace("_", " ").title()} - Feature Importance')
+                                title=f'{model_name.replace("_", " ").title()} - Feature Importance')
         artifacts['feature_importance'] = str(fi_path)
-    
+
     # Classification report
     report_path = model_output_dir / "classification_report.json"
     generate_classification_report(y_test, y_test_pred, save_path=report_path)
     artifacts['classification_report'] = str(report_path)
-    
+
     # Combine all metrics for MLflow logging
     all_metrics = {
         # CV metrics
@@ -202,7 +201,7 @@ def train_single_model(model_name, X_train, y_train, X_test, y_test, feature_nam
         # Train metrics
         **{f'train_{k}': v for k, v in train_metrics.items()}
     }
-    
+
     return {
         'model': model,
         'params': params_to_log,
@@ -215,7 +214,7 @@ def train_single_model(model_name, X_train, y_train, X_test, y_test, feature_nam
 def train_all_models(X_train, y_train, X_test, y_test, feature_names, output_dir='models/experiments'):
     """
     Train all models and track with MLflow.
-    
+
     Args:
         X_train: Training features
         y_train: Training target
@@ -223,68 +222,68 @@ def train_all_models(X_train, y_train, X_test, y_test, feature_names, output_dir
         y_test: Test target
         feature_names: List of feature names
         output_dir: Directory to save artifacts
-        
+
     Returns:
         dict: Results for all models
     """
     # Setup MLflow
     setup_mlflow()
-    
+
     # Define models to train
     models_to_train = ['logistic_regression', 'random_forest']
-    
+
     results = {}
     best_model = None
     best_auc = 0.0
-    
+
     # Train each model
     for model_name in models_to_train:
         with mlflow.start_run(run_name=model_name.replace('_', ' ').title()):
             print_run_info()
-            
+
             # Train model
             result = train_single_model(
-                model_name, X_train, y_train, X_test, y_test, 
+                model_name, X_train, y_train, X_test, y_test,
                 feature_names, output_dir
             )
-            
+
             # Log to MLflow
             log_params(result['params'])
             log_metrics(result['metrics'])
-            
+
             # Log artifacts
             for artifact_name, artifact_path in result['artifacts'].items():
                 if os.path.exists(artifact_path):
                     log_artifact(artifact_path)
-            
+
             # Log model
             log_model(result['model'], artifact_path="model")
-            
+
             # Store result
             results[model_name] = result
-            
+
             # Track best model
             if result['test_auc'] > best_auc:
                 best_auc = result['test_auc']
                 best_model = model_name
-            
+
             print(f"\n[SUCCESS] {model_name.replace('_', ' ').title()} training complete!")
             print(f"   Test ROC-AUC: {result['test_auc']:.4f}")
-    
-    print("\n" + "="*80)
+
+    print("\n" + "=" * 80)
     print("Training Complete!")
-    print("="*80)
+    print("=" * 80)
     print(f"Best Model: {best_model.replace('_', ' ').title()}")
     print(f"Best ROC-AUC: {best_auc:.4f}")
-    print("="*80)
-    
+    print("=" * 80)
+
     return results, best_model
 
 
 def save_best_model(results, best_model_name, model_path, metrics_path):
     """
     Save the best model and its metrics.
-    
+
     Args:
         results: Results from all models
         best_model_name: Name of the best model
@@ -292,12 +291,12 @@ def save_best_model(results, best_model_name, model_path, metrics_path):
         metrics_path: Path to save metrics
     """
     best_result = results[best_model_name]
-    
+
     # Save model
     Path(model_path).parent.mkdir(parents=True, exist_ok=True)
     joblib.dump(best_result['model'], model_path)
     print(f"\n[SUCCESS] Best model saved to {model_path}")
-    
+
     # Save metrics
     Path(metrics_path).parent.mkdir(parents=True, exist_ok=True)
     metrics_to_save = {
@@ -310,7 +309,7 @@ def save_best_model(results, best_model_name, model_path, metrics_path):
         'cv_accuracy_mean': best_result['metrics']['accuracy_cv_mean'],
         'cv_accuracy_std': best_result['metrics']['accuracy_cv_std']
     }
-    
+
     with open(metrics_path, 'w') as f:
         json.dump(metrics_to_save, f, indent=4)
     print(f"[SUCCESS] Metrics saved to {metrics_path}")
@@ -320,37 +319,37 @@ def main():
     """Main training function."""
     parser = argparse.ArgumentParser(description='Train Heart Disease Prediction Models')
     parser.add_argument('--train-path', default='data/processed/features_train.csv',
-                       help='Path to training features')
+                        help='Path to training features')
     parser.add_argument('--test-path', default='data/processed/features_test.csv',
-                       help='Path to test features')
+                        help='Path to test features')
     parser.add_argument('--output-path', default='models/model.pkl',
-                       help='Path to save best model')
+                        help='Path to save best model')
     parser.add_argument('--metrics-path', default='metrics/training_metrics.json',
-                       help='Path to save metrics')
+                        help='Path to save metrics')
     parser.add_argument('--experiment-dir', default='models/experiments',
-                       help='Directory for experiment artifacts')
-    
+                        help='Directory for experiment artifacts')
+
     args = parser.parse_args()
-    
+
     # Load data
     X_train, y_train, X_test, y_test, feature_names = load_data(
         args.train_path, args.test_path
     )
-    
+
     # Train all models
     results, best_model = train_all_models(
         X_train, y_train, X_test, y_test, feature_names, args.experiment_dir
     )
-    
+
     # Save best model
     save_best_model(results, best_model, args.output_path, args.metrics_path)
-    
-    print("\n" + "="*80)
+
+    print("\n" + "=" * 80)
     print("[SUCCESS] Model training pipeline completed successfully!")
-    print("="*80)
+    print("=" * 80)
     print("\nTo view experiments, run: mlflow ui")
     print("Then open http://localhost:5000 in your browser")
-    print("="*80 + "\n")
+    print("=" * 80 + "\n")
 
 
 if __name__ == "__main__":

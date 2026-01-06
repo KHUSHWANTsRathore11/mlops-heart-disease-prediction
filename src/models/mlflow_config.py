@@ -6,7 +6,6 @@ for experiment tracking in the Heart Disease Prediction project.
 """
 import os
 import mlflow
-from pathlib import Path
 
 
 # MLflow Configuration
@@ -17,14 +16,14 @@ EXPERIMENT_NAME = "heart-disease-model-training"
 def setup_mlflow():
     """
     Initialize MLflow with project configuration.
-    
+
     Returns:
         experiment_id: The MLflow experiment ID
     """
     # Set tracking URI
     mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
     print(f"MLflow tracking URI: {MLFLOW_TRACKING_URI}")
-    
+
     # Set or create experiment
     try:
         experiment_id = mlflow.create_experiment(EXPERIMENT_NAME)
@@ -33,7 +32,7 @@ def setup_mlflow():
         experiment = mlflow.get_experiment_by_name(EXPERIMENT_NAME)
         experiment_id = experiment.experiment_id
         print(f"Using existing experiment: {EXPERIMENT_NAME}")
-    
+
     mlflow.set_experiment(EXPERIMENT_NAME)
     return experiment_id
 
@@ -41,7 +40,7 @@ def setup_mlflow():
 def log_params(params):
     """
     Log parameters to MLflow.
-    
+
     Args:
         params: Dictionary of parameters
     """
@@ -51,7 +50,7 @@ def log_params(params):
 def log_metrics(metrics):
     """
     Log metrics to MLflow.
-    
+
     Args:
         metrics: Dictionary of metrics
     """
@@ -61,7 +60,7 @@ def log_metrics(metrics):
 def log_artifact(filepath):
     """
     Log an artifact to MLflow.
-    
+
     Args:
         filepath: Path to the artifact file
     """
@@ -75,7 +74,7 @@ def log_artifact(filepath):
 def log_model(model, artifact_path="model", **kwargs):
     """
     Log a scikit-learn model to MLflow.
-    
+
     Args:
         model: Trained sklearn model
         artifact_path: Path within the run's artifact directory
@@ -88,7 +87,7 @@ def log_model(model, artifact_path="model", **kwargs):
 def get_run_info():
     """
     Get information about the current MLflow run.
-    
+
     Returns:
         dict: Run information including run_id, experiment_id, etc.
     """
@@ -109,11 +108,11 @@ def print_run_info():
     """
     info = get_run_info()
     if info:
-        print("\n" + "="*60)
+        print("\n" + "=" * 60)
         print("MLflow Run Information")
-        print("="*60)
+        print("=" * 60)
         for key, value in info.items():
             print(f"{key:15s}: {value}")
-        print("="*60 + "\n")
+        print("=" * 60 + "\n")
     else:
         print("No active MLflow run")

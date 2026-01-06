@@ -11,13 +11,13 @@ from pathlib import Path
 def sample_heart_data():
     """
     Create sample heart disease data for testing.
-    
+
     Returns:
         pd.DataFrame: Sample data with typical heart disease features
     """
     np.random.seed(42)
     n_samples = 100
-    
+
     data = {
         'age': np.random.randint(25, 80, n_samples),
         'sex': np.random.randint(0, 2, n_samples),
@@ -34,7 +34,7 @@ def sample_heart_data():
         'thal': np.random.choice([3, 6, 7], n_samples),
         'target': np.random.randint(0, 2, n_samples)
     }
-    
+
     return pd.DataFrame(data)
 
 
@@ -42,7 +42,7 @@ def sample_heart_data():
 def sample_features_and_target(sample_heart_data):
     """
     Split sample data into features and target.
-    
+
     Returns:
         tuple: (X, y) - Features and target
     """
@@ -55,7 +55,7 @@ def sample_features_and_target(sample_heart_data):
 def data_paths():
     """
     Provide paths to test data files.
-    
+
     Returns:
         dict: Dictionary of data file paths
     """
@@ -73,7 +73,7 @@ def data_paths():
 def temp_model_path(tmp_path):
     """
     Create a temporary path for saving models during tests.
-    
+
     Returns:
         Path: Temporary directory path
     """
