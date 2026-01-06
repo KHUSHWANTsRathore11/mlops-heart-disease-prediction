@@ -2,7 +2,7 @@ name: MLOps CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, develop , feature/* ]
+    branches: [ main, develop ]
   pull_request:
     branches: [ main ]
   workflow_dispatch:  # Allow manual trigger
