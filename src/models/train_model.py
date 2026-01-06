@@ -1,5 +1,6 @@
 import argparse
 import os
+import json
 import joblib
 import pandas as pd
 import mlflow
@@ -34,7 +35,7 @@ def setup_mlflow(config):
     mlflow.set_experiment("heart-disease-training")
     print(f"MLflow tracking URI set to: {tracking_uri}")
 
-def train(train_path, test_path, output_path):
+def train(train_path, test_path, output_path, metrics_path):
     # Load data
     print(f"Loading data from {train_path} and {test_path}...")
     train_df = pd.read_csv(train_path)
@@ -78,8 +79,10 @@ def train(train_path, test_path, output_path):
         
         print(f"Metrics: Accuracy={acc:.4f}, F1={f1:.4f}, AUC={auc:.4f}")
         
-        # Log metrics
-        mlflow.log_metrics({"accuracy": acc, "f1_score": f1, "auc": auc})
+        metrics = {"accuracy": acc, "f1_score": f1, "auc": auc}
+        
+        # Log metrics to MLflow
+        mlflow.log_metrics(metrics)
         
         # Log model
         mlflow.sklearn.log_model(model, "model")
@@ -88,12 +91,19 @@ def train(train_path, test_path, output_path):
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
         joblib.dump(model, output_path)
         print(f"Model saved locally to {output_path}")
+        
+        # Save metrics locally for DVC
+        os.makedirs(os.path.dirname(metrics_path), exist_ok=True)
+        with open(metrics_path, 'w') as f:
+            json.dump(metrics, f, indent=4)
+        print(f"Metrics saved locally to {metrics_path}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--train-path", default="data/processed/features_train.csv")
     parser.add_argument("--test-path", default="data/processed/features_test.csv")
     parser.add_argument("--output-path", default="models/model.pkl")
+    parser.add_argument("--metrics-path", default="metrics/training_metrics.json")
     args = parser.parse_args()
     
     # Load project config
@@ -104,4 +114,4 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"Warning: Could not set up Azure MLflow ({e}). Continuing with local MLflow/no logging.")
         
-    train(args.train_path, args.test_path, args.output_path)
+    train(args.train_path, args.test_path, args.output_path, args.metrics_path)
