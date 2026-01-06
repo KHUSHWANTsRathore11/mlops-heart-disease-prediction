@@ -11,7 +11,7 @@ import pytest
 project_root = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(project_root))
 
-from src.data.preprocessing import (
+from src.data.preprocessing import (  # noqa: E402
     HeartDiseasePreprocessor,
     clean_data,
     prepare_train_test_split,
