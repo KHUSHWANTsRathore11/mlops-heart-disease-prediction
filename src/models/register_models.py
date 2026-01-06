@@ -4,9 +4,10 @@ Register trained models to MLflow Model Registry.
 This script registers the best models from MLflow runs to the Model Registry
 for easier model management and deployment.
 """
+import os
+
 import mlflow
 from mlflow.tracking import MlflowClient
-import os
 
 
 def setup_mlflow():
@@ -26,14 +27,13 @@ def get_best_runs(client, experiment_name="heart-disease-model-training"):
 
     experiment_id = experiment.experiment_id
     runs = client.search_runs(
-        experiment_ids=[experiment_id],
-        order_by=["metrics.test_roc_auc DESC"]
+        experiment_ids=[experiment_id], order_by=["metrics.test_roc_auc DESC"]
     )
 
     # Group by model type and get best for each
     best_runs = {}
     for run in runs:
-        model_type = run.data.params.get('model_type', 'unknown')
+        model_type = run.data.params.get("model_type", "unknown")
         if model_type not in best_runs:
             best_runs[model_type] = run
 
@@ -47,23 +47,17 @@ def register_model(client, run_id, model_name, model_type):
         model_uri = f"runs:/{run_id}/model"
 
         # Register the model
-        model_version = mlflow.register_model(
-            model_uri=model_uri,
-            name=model_name
-        )
+        model_version = mlflow.register_model(model_uri=model_uri, name=model_name)
 
         # Add description and tags
         client.update_model_version(
             name=model_name,
             version=model_version.version,
-            description=f"Heart Disease Prediction model using {model_type}"
+            description=f"Heart Disease Prediction model using {model_type}",
         )
 
         client.set_model_version_tag(
-            name=model_name,
-            version=model_version.version,
-            key="model_type",
-            value=model_type
+            name=model_name, version=model_version.version, key="model_type", value=model_type
         )
 
         print(f"[SUCCESS] Registered {model_name} version {model_version.version}")
@@ -93,7 +87,7 @@ def main():
 
     print(f"\nFound {len(best_runs)} model(s) to register:")
     for model_type, run in best_runs.items():
-        test_auc = run.data.metrics.get('test_roc_auc', 0)
+        test_auc = run.data.metrics.get("test_roc_auc", 0)
         print(f"  - {model_type}: ROC-AUC = {test_auc:.4f} (Run: {run.info.run_id[:8]}...)")
 
     # Register each model
@@ -105,20 +99,17 @@ def main():
         model_name = f"heart-disease-{model_type.replace('_', '-')}"
 
         # Register model
-        version = register_model(
-            client,
-            run.info.run_id,
-            model_name,
-            model_type
-        )
+        version = register_model(client, run.info.run_id, model_name, model_type)
 
         if version:
-            registered.append({
-                'name': model_name,
-                'version': version.version,
-                'type': model_type,
-                'run_id': run.info.run_id
-            })
+            registered.append(
+                {
+                    "name": model_name,
+                    "version": version.version,
+                    "type": model_type,
+                    "run_id": run.info.run_id,
+                }
+            )
 
     # Summary
     print("\n" + "=" * 70)

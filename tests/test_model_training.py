@@ -1,10 +1,10 @@
 """
 Tests for model training functionality.
 """
-import pandas as pd
 import joblib
-from sklearn.linear_model import LogisticRegression
+import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import cross_val_score
 
 
@@ -32,7 +32,7 @@ class TestModelTraining:
         X, y = sample_features_and_target
         model = LogisticRegression(random_state=42)
         model.fit(X, y)
-        assert hasattr(model, 'coef_')
+        assert hasattr(model, "coef_")
 
     def test_model_training_with_different_models(self, sample_features_and_target):
         """Test training with different model types"""
@@ -40,12 +40,12 @@ class TestModelTraining:
 
         models = [
             LogisticRegression(random_state=42),
-            RandomForestClassifier(n_estimators=10, random_state=42)
+            RandomForestClassifier(n_estimators=10, random_state=42),
         ]
 
         for model in models:
             model.fit(X, y)
-            assert hasattr(model, 'predict')
+            assert hasattr(model, "predict")
 
 
 class TestModelPredictions:
@@ -91,7 +91,7 @@ class TestModelMetrics:
 
     def test_multiple_metrics(self, sample_features_and_target):
         """Test calculation of multiple metrics"""
-        from sklearn.metrics import precision_score, recall_score, f1_score
+        from sklearn.metrics import f1_score, precision_score, recall_score
 
         X, y = sample_features_and_target
         model = LogisticRegression(random_state=42)
@@ -131,7 +131,7 @@ class TestModelPersistence:
         # Load model
         loaded_model = joblib.load(temp_model_path)
         assert loaded_model is not None
-        assert hasattr(loaded_model, 'predict')
+        assert hasattr(loaded_model, "predict")
 
     def test_loaded_model_makes_same_predictions(self, sample_features_and_target, temp_model_path):
         """Test that loaded model makes same predictions as original"""
@@ -157,7 +157,7 @@ class TestCrossValidation:
         X, y = sample_features_and_target
         model = LogisticRegression(random_state=42)
 
-        scores = cross_val_score(model, X, y, cv=3, scoring='accuracy')
+        scores = cross_val_score(model, X, y, cv=3, scoring="accuracy")
         assert len(scores) == 3
         assert all(0 <= score <= 1 for score in scores)
 
@@ -166,7 +166,7 @@ class TestCrossValidation:
         X, y = sample_features_and_target
         model = LogisticRegression(random_state=42)
 
-        metrics = ['accuracy', 'precision', 'recall', 'f1', 'roc_auc']
+        metrics = ["accuracy", "precision", "recall", "f1", "roc_auc"]
 
         for metric in metrics:
             scores = cross_val_score(model, X, y, cv=3, scoring=metric)
@@ -179,23 +179,23 @@ class TestSavedModel:
 
     def test_project_model_exists(self, data_paths):
         """Test that the project's trained model exists"""
-        assert data_paths['model'].exists(), f"Model not found at {data_paths['model']}"
+        assert data_paths["model"].exists(), f"Model not found at {data_paths['model']}"
 
     def test_project_model_can_load(self, data_paths):
         """Test that the project model can be loaded"""
-        if data_paths['model'].exists():
-            model = joblib.load(data_paths['model'])
+        if data_paths["model"].exists():
+            model = joblib.load(data_paths["model"])
             assert model is not None
-            assert hasattr(model, 'predict')
+            assert hasattr(model, "predict")
 
     def test_project_model_can_predict(self, data_paths):
         """Test that project model can make predictions on test data"""
-        if data_paths['model'].exists() and data_paths['test_features'].exists():
-            model = joblib.load(data_paths['model'])
-            test_df = pd.read_csv(data_paths['test_features'])
+        if data_paths["model"].exists() and data_paths["test_features"].exists():
+            model = joblib.load(data_paths["model"])
+            test_df = pd.read_csv(data_paths["test_features"])
 
             # Remove target and metadata if present
-            X_test = test_df.drop(columns=['target', 'timestamp', 'patient_id'], errors='ignore')
+            X_test = test_df.drop(columns=["target", "timestamp", "patient_id"], errors="ignore")
 
             predictions = model.predict(X_test)
             assert len(predictions) == len(X_test)

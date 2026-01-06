@@ -1,12 +1,13 @@
 """
 Data preprocessing utilities for Heart Disease dataset.
 """
-import pandas as pd
-import numpy as np
-from sklearn.preprocessing import StandardScaler, LabelEncoder
-from sklearn.model_selection import train_test_split
 import pickle
 from pathlib import Path
+
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder, StandardScaler
 
 
 class HeartDiseasePreprocessor:
@@ -21,7 +22,7 @@ class HeartDiseasePreprocessor:
         self.numerical_features = []
         self.categorical_features = []
 
-    def fit(self, df, target_col='target'):
+    def fit(self, df, target_col="target"):
         """
         Fit the preprocessor on training data.
 
@@ -33,13 +34,13 @@ class HeartDiseasePreprocessor:
         self.feature_names = [col for col in df.columns if col != target_col]
 
         # Identify numerical and categorical features
-        self.numerical_features = df[self.feature_names].select_dtypes(
-            include=[np.number]
-        ).columns.tolist()
+        self.numerical_features = (
+            df[self.feature_names].select_dtypes(include=[np.number]).columns.tolist()
+        )
 
-        self.categorical_features = df[self.feature_names].select_dtypes(
-            include=['object', 'category']
-        ).columns.tolist()
+        self.categorical_features = (
+            df[self.feature_names].select_dtypes(include=["object", "category"]).columns.tolist()
+        )
 
         # Fit scaler on numerical features
         if self.numerical_features:
@@ -53,7 +54,7 @@ class HeartDiseasePreprocessor:
 
         return self
 
-    def transform(self, df, target_col='target'):
+    def transform(self, df, target_col="target"):
         """
         Transform data using fitted preprocessor.
 
@@ -75,13 +76,11 @@ class HeartDiseasePreprocessor:
         # Encode categorical features
         for col in self.categorical_features:
             if col in self.label_encoders:
-                df_copy[col] = self.label_encoders[col].transform(
-                    df_copy[col].astype(str)
-                )
+                df_copy[col] = self.label_encoders[col].transform(df_copy[col].astype(str))
 
         return df_copy
 
-    def fit_transform(self, df, target_col='target'):
+    def fit_transform(self, df, target_col="target"):
         """
         Fit and transform in one step.
 
@@ -103,7 +102,7 @@ class HeartDiseasePreprocessor:
             filepath (str): Path to save the preprocessor
         """
         Path(filepath).parent.mkdir(parents=True, exist_ok=True)
-        with open(filepath, 'wb') as f:
+        with open(filepath, "wb") as f:
             pickle.dump(self, f)
         print(f"Preprocessor saved to {filepath}")
 
@@ -118,13 +117,13 @@ class HeartDiseasePreprocessor:
         Returns:
             HeartDiseasePreprocessor: Loaded preprocessor
         """
-        with open(filepath, 'rb') as f:
+        with open(filepath, "rb") as f:
             preprocessor = pickle.load(f)
         print(f"Preprocessor loaded from {filepath}")
         return preprocessor
 
 
-def clean_data(df, target_col='target'):
+def clean_data(df, target_col="target"):
     """
     Clean the raw heart disease dataset.
 
@@ -146,10 +145,10 @@ def clean_data(df, target_col='target'):
         df_clean[target_col] = (df_clean[target_col] > 0).astype(int)
 
     # Add dummy timestamp and index for Feature Store compatibility
-    if 'timestamp' not in df_clean.columns:
-        df_clean['timestamp'] = pd.Timestamp.now()
-    if 'patient_id' not in df_clean.columns:
-        df_clean['patient_id'] = range(1, len(df_clean) + 1)
+    if "timestamp" not in df_clean.columns:
+        df_clean["timestamp"] = pd.Timestamp.now()
+    if "patient_id" not in df_clean.columns:
+        df_clean["patient_id"] = range(1, len(df_clean) + 1)
 
     # Handle missing values
     # For numerical columns, fill with median
@@ -161,7 +160,7 @@ def clean_data(df, target_col='target'):
             print(f"Filled {col} missing values with median: {median_val}")
 
     # For categorical columns, fill with mode
-    categorical_cols = df_clean.select_dtypes(include=['object', 'category']).columns
+    categorical_cols = df_clean.select_dtypes(include=["object", "category"]).columns
     for col in categorical_cols:
         if df_clean[col].isnull().sum() > 0:
             mode_val = df_clean[col].mode()[0]
@@ -182,7 +181,7 @@ def clean_data(df, target_col='target'):
     return df_clean
 
 
-def prepare_train_test_split(df, target_col='target', test_size=0.2, random_state=42):
+def prepare_train_test_split(df, target_col="target", test_size=0.2, random_state=42):
     """
     Split data into train and test sets.
 

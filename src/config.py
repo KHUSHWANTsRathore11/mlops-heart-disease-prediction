@@ -1,6 +1,7 @@
-import yaml
 import os
 from pathlib import Path
+
+import yaml
 
 
 def load_config():
@@ -18,6 +19,6 @@ def load_config():
 
     # Override with env vars (GitHub Secrets pattern)
     if os.environ.get("AZURE_SUBSCRIPTION_ID"):
-        config['azure']['subscription_id'] = os.environ.get("AZURE_SUBSCRIPTION_ID")
+        config["azure"]["subscription_id"] = os.environ.get("AZURE_SUBSCRIPTION_ID")
 
     return config

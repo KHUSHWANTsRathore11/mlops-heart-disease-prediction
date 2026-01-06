@@ -1,11 +1,13 @@
 """
 Tests for feature engineering pipeline
 """
-from src.data.preprocessing import HeartDiseasePreprocessor, clean_data, prepare_train_test_split
-import pytest
-import pandas as pd
-from pathlib import Path
 import sys
+from pathlib import Path
+
+import pandas as pd
+import pytest
+
+from src.data.preprocessing import HeartDiseasePreprocessor, clean_data, prepare_train_test_split
 
 # Add project root to path
 project_root = Path(__file__).resolve().parents[1]
@@ -19,27 +21,27 @@ class TestHeartDiseasePreprocessor:
         """Test that preprocessor can fit and transform data"""
         # Create sample data
         data = {
-            'age': [25, 30, 45, 50, 60],
-            'sex': [1, 0, 1, 0, 1],
-            'cp': [1, 2, 3, 1, 2],
-            'trestbps': [120, 130, 140, 150, 160],
-            'chol': [200, 220, 240, 260, 280],
-            'target': [0, 1, 0, 1, 0]
+            "age": [25, 30, 45, 50, 60],
+            "sex": [1, 0, 1, 0, 1],
+            "cp": [1, 2, 3, 1, 2],
+            "trestbps": [120, 130, 140, 150, 160],
+            "chol": [200, 220, 240, 260, 280],
+            "target": [0, 1, 0, 1, 0],
         }
         df = pd.DataFrame(data)
 
         # Initialize and fit preprocessor
         preprocessor = HeartDiseasePreprocessor()
-        transformed = preprocessor.fit_transform(df, target_col='target')
+        transformed = preprocessor.fit_transform(df, target_col="target")
 
         # Check that data is transformed
         assert transformed is not None
         assert len(transformed) == len(df)
-        assert 'target' in transformed.columns
+        assert "target" in transformed.columns
 
         # Check that numerical features are scaled (mean ~= 0, std ~= 1)
         # Note: For small samples, std won't be exactly 1.0, so we use a reasonable tolerance
-        numerical_cols = ['age', 'trestbps', 'chol']
+        numerical_cols = ["age", "trestbps", "chol"]
         for col in numerical_cols:
             mean_val = transformed[col].mean()
             std_val = transformed[col].std()
@@ -49,16 +51,12 @@ class TestHeartDiseasePreprocessor:
     def test_preprocessor_save_load(self, tmp_path):
         """Test that preprocessor can be saved and loaded"""
         # Create sample data
-        data = {
-            'age': [25, 30, 45],
-            'sex': [1, 0, 1],
-            'target': [0, 1, 0]
-        }
+        data = {"age": [25, 30, 45], "sex": [1, 0, 1], "target": [0, 1, 0]}
         df = pd.DataFrame(data)
 
         # Fit preprocessor
         preprocessor = HeartDiseasePreprocessor()
-        preprocessor.fit(df, target_col='target')
+        preprocessor.fit(df, target_col="target")
 
         # Save preprocessor
         save_path = tmp_path / "test_preprocessor.pkl"
@@ -75,24 +73,20 @@ class TestHeartDiseasePreprocessor:
         """Test that preprocessor transforms train and test consistently"""
         # Create train and test data
         train_data = {
-            'age': [25, 30, 45, 50, 60],
-            'sex': [1, 0, 1, 0, 1],
-            'target': [0, 1, 0, 1, 0]
+            "age": [25, 30, 45, 50, 60],
+            "sex": [1, 0, 1, 0, 1],
+            "target": [0, 1, 0, 1, 0],
         }
-        test_data = {
-            'age': [35, 55],
-            'sex': [1, 0],
-            'target': [1, 0]
-        }
+        test_data = {"age": [35, 55], "sex": [1, 0], "target": [1, 0]}
         train_df = pd.DataFrame(train_data)
         test_df = pd.DataFrame(test_data)
 
         # Fit on train, transform both
         preprocessor = HeartDiseasePreprocessor()
-        preprocessor.fit(train_df, target_col='target')
+        preprocessor.fit(train_df, target_col="target")
 
-        train_transformed = preprocessor.transform(train_df, target_col='target')
-        test_transformed = preprocessor.transform(test_df, target_col='target')
+        train_transformed = preprocessor.transform(train_df, target_col="target")
+        test_transformed = preprocessor.transform(test_df, target_col="target")
 
         # Both should have the same columns
         assert set(train_transformed.columns) == set(test_transformed.columns)
@@ -115,16 +109,12 @@ class TestCleanData:
     def test_clean_data_target_binary(self):
         """Test that target is converted to binary"""
         # Create sample data with multi-class target
-        data = {
-            'age': [25, 30, 45],
-            'sex': [1, 0, 1],
-            'target': [0, 1, 2]  # Multi-class
-        }
+        data = {"age": [25, 30, 45], "sex": [1, 0, 1], "target": [0, 1, 2]}  # Multi-class
         df = pd.DataFrame(data)
         df_clean = clean_data(df)
 
         # Target should be binary (0 or 1)
-        assert set(df_clean['target'].unique()).issubset({0, 1})
+        assert set(df_clean["target"].unique()).issubset({0, 1})
 
 
 class TestTrainTestSplit:
@@ -134,9 +124,9 @@ class TestTrainTestSplit:
         """Test that split produces correct ratio"""
         # Create sample data
         data = {
-            'age': list(range(100)),
-            'sex': [i % 2 for i in range(100)],
-            'target': [i % 2 for i in range(100)]
+            "age": list(range(100)),
+            "sex": [i % 2 for i in range(100)],
+            "target": [i % 2 for i in range(100)],
         }
         df = pd.DataFrame(data)
 
@@ -152,9 +142,9 @@ class TestTrainTestSplit:
         """Test that split preserves class distribution"""
         # Create imbalanced data
         data = {
-            'age': list(range(100)),
-            'sex': [i % 2 for i in range(100)],
-            'target': [1] * 70 + [0] * 30  # 70% class 1, 30% class 0
+            "age": list(range(100)),
+            "sex": [i % 2 for i in range(100)],
+            "target": [1] * 70 + [0] * 30,  # 70% class 1, 30% class 0
         }
         df = pd.DataFrame(data)
 
@@ -190,15 +180,15 @@ class TestFeatureEngineeringIntegration:
         assert set(train_df.columns) == set(test_df.columns)
 
         # Should have target column
-        assert 'target' in train_df.columns
-        assert 'target' in test_df.columns
+        assert "target" in train_df.columns
+        assert "target" in test_df.columns
 
     def test_features_are_scaled(self):
         """Test that numerical features are properly scaled"""
         train_df = pd.read_csv("data/processed/features_train.csv")
 
         # Check that numerical features have reasonable scaled values
-        numerical_features = ['age', 'trestbps', 'chol', 'thalach', 'oldpeak']
+        numerical_features = ["age", "trestbps", "chol", "thalach", "oldpeak"]
 
         for col in numerical_features:
             if col in train_df.columns:
@@ -212,9 +202,9 @@ class TestFeatureEngineeringIntegration:
         test_df = pd.read_csv("data/processed/features_test.csv")
 
         # If patient_id exists, check for duplicates
-        if 'patient_id' in train_df.columns and 'patient_id' in test_df.columns:
-            train_ids = set(train_df['patient_id'])
-            test_ids = set(test_df['patient_id'])
+        if "patient_id" in train_df.columns and "patient_id" in test_df.columns:
+            train_ids = set(train_df["patient_id"])
+            test_ids = set(test_df["patient_id"])
 
             # No overlap allowed
             assert len(train_ids.intersection(test_ids)) == 0, "Data leakage detected!"

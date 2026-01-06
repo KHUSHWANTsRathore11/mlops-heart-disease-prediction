@@ -1,7 +1,8 @@
-from src.config import load_config
-import sys
 import subprocess
+import sys
 from pathlib import Path
+
+from src.config import load_config
 
 # Add project root to path to import src modules
 sys.path.append(str(Path(__file__).resolve().parents[1]))
@@ -22,8 +23,8 @@ def configure_dvc():
     print("Loading configuration...")
     config = load_config()
 
-    storage_account = config['storage']['account_name']
-    container_name = config['storage']['container_name']
+    storage_account = config["storage"]["account_name"]
+    container_name = config["storage"]["container_name"]
 
     remote_name = "azure-remote"
     remote_url = f"azure://{container_name}/dvc-data"
@@ -34,7 +35,12 @@ def configure_dvc():
 
     # Check if remote exists
     try:
-        subprocess.run(f"dvc remote list | grep {remote_name}", shell=True, check=True, stdout=subprocess.DEVNULL)
+        subprocess.run(
+            f"dvc remote list | grep {remote_name}",
+            shell=True,
+            check=True,
+            stdout=subprocess.DEVNULL,
+        )
         print(f"Remote '{remote_name}' already exists. Updating settings...")
     except subprocess.CalledProcessError:
         print(f"Adding new remote '{remote_name}'...")

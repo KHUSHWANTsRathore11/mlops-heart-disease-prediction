@@ -2,9 +2,10 @@
 Script to download the Heart Disease UCI dataset.
 """
 import sys
-import pandas as pd
 import urllib.request
 from pathlib import Path
+
+import pandas as pd
 
 
 def download_heart_disease_data(output_dir="data/raw"):
@@ -26,13 +27,25 @@ def download_heart_disease_data(output_dir="data/raw"):
         "processed.cleveland.data": "processed.cleveland.data",
         "processed.hungarian.data": "processed.hungarian.data",
         "processed.switzerland.data": "processed.switzerland.data",
-        "processed.va.data": "processed.va.data"
+        "processed.va.data": "processed.va.data",
     }
 
     # Column names for the dataset
     column_names = [
-        'age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg',
-        'thalach', 'exang', 'oldpeak', 'slope', 'ca', 'thal', 'target'
+        "age",
+        "sex",
+        "cp",
+        "trestbps",
+        "chol",
+        "fbs",
+        "restecg",
+        "thalach",
+        "exang",
+        "oldpeak",
+        "slope",
+        "ca",
+        "thal",
+        "target",
     ]
 
     print("Starting Heart Disease dataset download...")

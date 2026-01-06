@@ -8,30 +8,37 @@ Usage:
     python src/models/train_model.py
 """
 import argparse
-import os
 import json
-import joblib
-import pandas as pd
-import mlflow
-import mlflow.sklearn
+import os
 from pathlib import Path
 
-from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import RandomForestClassifier
+import joblib
+import mlflow
+import mlflow.sklearn
+import pandas as pd
 
 # Import evaluation utilities
 from evaluation import (
-    cross_validate_model,
     calculate_metrics,
-    print_metrics,
+    cross_validate_model,
+    generate_classification_report,
     plot_confusion_matrix,
-    plot_roc_curve,
     plot_feature_importance,
-    generate_classification_report
+    plot_roc_curve,
+    print_metrics,
 )
 
 # Import MLflow configuration
-from mlflow_config import setup_mlflow, log_params, log_metrics, log_artifact, log_model, print_run_info
+from mlflow_config import (
+    log_artifact,
+    log_metrics,
+    log_model,
+    log_params,
+    print_run_info,
+    setup_mlflow,
+)
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
 
 
 def load_data(train_path, test_path):
@@ -51,10 +58,10 @@ def load_data(train_path, test_path):
     test_df = pd.read_csv(test_path)
 
     # Assume 'target' is the column name
-    target_col = 'target'
+    target_col = "target"
 
     # Drop non-feature columns
-    drop_cols = ['patient_id', 'timestamp']
+    drop_cols = ["patient_id", "timestamp"]
     drop_cols = [c for c in drop_cols if c in train_df.columns]
 
     # Separate features and target
@@ -83,23 +90,18 @@ def get_model_config(model_type):
     Returns:
         tuple: (model, params_dict)
     """
-    if model_type == 'logistic_regression':
-        params = {
-            'C': 1.0,
-            'solver': 'liblinear',
-            'max_iter': 1000,
-            'random_state': 42
-        }
+    if model_type == "logistic_regression":
+        params = {"C": 1.0, "solver": "liblinear", "max_iter": 1000, "random_state": 42}
         model = LogisticRegression(**params)
 
-    elif model_type == 'random_forest':
+    elif model_type == "random_forest":
         params = {
-            'n_estimators': 100,
-            'max_depth': 10,
-            'min_samples_split': 5,
-            'min_samples_leaf': 2,
-            'random_state': 42,
-            'n_jobs': -1
+            "n_estimators": 100,
+            "max_depth": 10,
+            "min_samples_split": 5,
+            "min_samples_leaf": 2,
+            "random_state": 42,
+            "n_jobs": -1,
         }
         model = RandomForestClassifier(**params)
 
@@ -135,10 +137,10 @@ def train_single_model(model_name, X_train, y_train, X_test, y_test, feature_nam
     # Add metadata to params
     params_to_log = {
         **params,
-        'model_type': model_name,
-        'n_train_samples': X_train.shape[0],
-        'n_test_samples': X_test.shape[0],
-        'n_features': X_train.shape[1]
+        "model_type": model_name,
+        "n_train_samples": X_train.shape[0],
+        "n_test_samples": X_test.shape[0],
+        "n_features": X_train.shape[1],
     }
 
     # Perform cross-validation
@@ -170,48 +172,62 @@ def train_single_model(model_name, X_train, y_train, X_test, y_test, feature_nam
 
     # Confusion matrix
     cm_path = model_output_dir / "confusion_matrix.png"
-    plot_confusion_matrix(y_test, y_test_pred, save_path=cm_path,
-                          title=f'{model_name.replace("_", " ").title()} - Confusion Matrix')
-    artifacts['confusion_matrix'] = str(cm_path)
+    plot_confusion_matrix(
+        y_test,
+        y_test_pred,
+        save_path=cm_path,
+        title=f'{model_name.replace("_", " ").title()} - Confusion Matrix',
+    )
+    artifacts["confusion_matrix"] = str(cm_path)
 
     # ROC curve
     roc_path = model_output_dir / "roc_curve.png"
-    plot_roc_curve(y_test, y_test_proba, save_path=roc_path,
-                   title=f'{model_name.replace("_", " ").title()} - ROC Curve')
-    artifacts['roc_curve'] = str(roc_path)
+    plot_roc_curve(
+        y_test,
+        y_test_proba,
+        save_path=roc_path,
+        title=f'{model_name.replace("_", " ").title()} - ROC Curve',
+    )
+    artifacts["roc_curve"] = str(roc_path)
 
     # Feature importance (for tree-based models)
-    if hasattr(model, 'feature_importances_'):
+    if hasattr(model, "feature_importances_"):
         fi_path = model_output_dir / "feature_importance.png"
-        plot_feature_importance(model, feature_names, save_path=fi_path,
-                                title=f'{model_name.replace("_", " ").title()} - Feature Importance')
-        artifacts['feature_importance'] = str(fi_path)
+        plot_feature_importance(
+            model,
+            feature_names,
+            save_path=fi_path,
+            title=f'{model_name.replace("_", " ").title()} - Feature Importance',
+        )
+        artifacts["feature_importance"] = str(fi_path)
 
     # Classification report
     report_path = model_output_dir / "classification_report.json"
     generate_classification_report(y_test, y_test_pred, save_path=report_path)
-    artifacts['classification_report'] = str(report_path)
+    artifacts["classification_report"] = str(report_path)
 
     # Combine all metrics for MLflow logging
     all_metrics = {
         # CV metrics
-        **{k: v for k, v in cv_results.items() if 'cv_mean' in k or 'cv_std' in k},
+        **{k: v for k, v in cv_results.items() if "cv_mean" in k or "cv_std" in k},
         # Test metrics
-        **{f'test_{k}': v for k, v in test_metrics.items()},
+        **{f"test_{k}": v for k, v in test_metrics.items()},
         # Train metrics
-        **{f'train_{k}': v for k, v in train_metrics.items()}
+        **{f"train_{k}": v for k, v in train_metrics.items()},
     }
 
     return {
-        'model': model,
-        'params': params_to_log,
-        'metrics': all_metrics,
-        'artifacts': artifacts,
-        'test_auc': test_metrics['roc_auc']
+        "model": model,
+        "params": params_to_log,
+        "metrics": all_metrics,
+        "artifacts": artifacts,
+        "test_auc": test_metrics["roc_auc"],
     }
 
 
-def train_all_models(X_train, y_train, X_test, y_test, feature_names, output_dir='models/experiments'):
+def train_all_models(
+    X_train, y_train, X_test, y_test, feature_names, output_dir="models/experiments"
+):
     """
     Train all models and track with MLflow.
 
@@ -230,7 +246,7 @@ def train_all_models(X_train, y_train, X_test, y_test, feature_names, output_dir
     setup_mlflow()
 
     # Define models to train
-    models_to_train = ['logistic_regression', 'random_forest']
+    models_to_train = ["logistic_regression", "random_forest"]
 
     results = {}
     best_model = None
@@ -238,33 +254,32 @@ def train_all_models(X_train, y_train, X_test, y_test, feature_names, output_dir
 
     # Train each model
     for model_name in models_to_train:
-        with mlflow.start_run(run_name=model_name.replace('_', ' ').title()):
+        with mlflow.start_run(run_name=model_name.replace("_", " ").title()):
             print_run_info()
 
             # Train model
             result = train_single_model(
-                model_name, X_train, y_train, X_test, y_test,
-                feature_names, output_dir
+                model_name, X_train, y_train, X_test, y_test, feature_names, output_dir
             )
 
             # Log to MLflow
-            log_params(result['params'])
-            log_metrics(result['metrics'])
+            log_params(result["params"])
+            log_metrics(result["metrics"])
 
             # Log artifacts
-            for artifact_name, artifact_path in result['artifacts'].items():
+            for artifact_name, artifact_path in result["artifacts"].items():
                 if os.path.exists(artifact_path):
                     log_artifact(artifact_path)
 
             # Log model
-            log_model(result['model'], artifact_path="model")
+            log_model(result["model"], artifact_path="model")
 
             # Store result
             results[model_name] = result
 
             # Track best model
-            if result['test_auc'] > best_auc:
-                best_auc = result['test_auc']
+            if result["test_auc"] > best_auc:
+                best_auc = result["test_auc"]
                 best_model = model_name
 
             print(f"\n[SUCCESS] {model_name.replace('_', ' ').title()} training complete!")
@@ -294,47 +309,50 @@ def save_best_model(results, best_model_name, model_path, metrics_path):
 
     # Save model
     Path(model_path).parent.mkdir(parents=True, exist_ok=True)
-    joblib.dump(best_result['model'], model_path)
+    joblib.dump(best_result["model"], model_path)
     print(f"\n[SUCCESS] Best model saved to {model_path}")
 
     # Save metrics
     Path(metrics_path).parent.mkdir(parents=True, exist_ok=True)
     metrics_to_save = {
-        'model_type': best_model_name,
-        'test_accuracy': best_result['metrics']['test_accuracy'],
-        'test_precision': best_result['metrics']['test_precision'],
-        'test_recall': best_result['metrics']['test_recall'],
-        'test_f1': best_result['metrics']['test_f1'],
-        'test_roc_auc': best_result['metrics']['test_roc_auc'],
-        'cv_accuracy_mean': best_result['metrics']['accuracy_cv_mean'],
-        'cv_accuracy_std': best_result['metrics']['accuracy_cv_std']
+        "model_type": best_model_name,
+        "test_accuracy": best_result["metrics"]["test_accuracy"],
+        "test_precision": best_result["metrics"]["test_precision"],
+        "test_recall": best_result["metrics"]["test_recall"],
+        "test_f1": best_result["metrics"]["test_f1"],
+        "test_roc_auc": best_result["metrics"]["test_roc_auc"],
+        "cv_accuracy_mean": best_result["metrics"]["accuracy_cv_mean"],
+        "cv_accuracy_std": best_result["metrics"]["accuracy_cv_std"],
     }
 
-    with open(metrics_path, 'w') as f:
+    with open(metrics_path, "w") as f:
         json.dump(metrics_to_save, f, indent=4)
     print(f"[SUCCESS] Metrics saved to {metrics_path}")
 
 
 def main():
     """Main training function."""
-    parser = argparse.ArgumentParser(description='Train Heart Disease Prediction Models')
-    parser.add_argument('--train-path', default='data/processed/features_train.csv',
-                        help='Path to training features')
-    parser.add_argument('--test-path', default='data/processed/features_test.csv',
-                        help='Path to test features')
-    parser.add_argument('--output-path', default='models/model.pkl',
-                        help='Path to save best model')
-    parser.add_argument('--metrics-path', default='metrics/training_metrics.json',
-                        help='Path to save metrics')
-    parser.add_argument('--experiment-dir', default='models/experiments',
-                        help='Directory for experiment artifacts')
+    parser = argparse.ArgumentParser(description="Train Heart Disease Prediction Models")
+    parser.add_argument(
+        "--train-path",
+        default="data/processed/features_train.csv",
+        help="Path to training features",
+    )
+    parser.add_argument(
+        "--test-path", default="data/processed/features_test.csv", help="Path to test features"
+    )
+    parser.add_argument("--output-path", default="models/model.pkl", help="Path to save best model")
+    parser.add_argument(
+        "--metrics-path", default="metrics/training_metrics.json", help="Path to save metrics"
+    )
+    parser.add_argument(
+        "--experiment-dir", default="models/experiments", help="Directory for experiment artifacts"
+    )
 
     args = parser.parse_args()
 
     # Load data
-    X_train, y_train, X_test, y_test, feature_names = load_data(
-        args.train_path, args.test_path
-    )
+    X_train, y_train, X_test, y_test, feature_names = load_data(args.train_path, args.test_path)
 
     # Train all models
     results, best_model = train_all_models(

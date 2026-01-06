@@ -5,8 +5,8 @@ This module centralizes MLflow configuration and provides helper functions
 for experiment tracking in the Heart Disease Prediction project.
 """
 import os
-import mlflow
 
+import mlflow
 
 # MLflow Configuration
 MLFLOW_TRACKING_URI = f"file://{os.path.abspath('mlruns')}"
@@ -94,10 +94,10 @@ def get_run_info():
     run = mlflow.active_run()
     if run:
         return {
-            'run_id': run.info.run_id,
-            'experiment_id': run.info.experiment_id,
-            'run_name': run.info.run_name,
-            'status': run.info.status
+            "run_id": run.info.run_id,
+            "experiment_id": run.info.experiment_id,
+            "run_name": run.info.run_name,
+            "status": run.info.status,
         }
     return None
 

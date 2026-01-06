@@ -1,10 +1,12 @@
-from src.data.preprocessing import HeartDiseasePreprocessor, prepare_train_test_split
 import argparse
-import pandas as pd
-from pathlib import Path
-import mlflow
-import sys
 import os
+import sys
+from pathlib import Path
+
+import mlflow
+import pandas as pd
+
+from src.data.preprocessing import HeartDiseasePreprocessor, prepare_train_test_split
 
 # Add project root to path to import src modules
 sys.path.append(str(Path(__file__).resolve().parents[2]))
@@ -46,12 +48,12 @@ def engineer_features(input_path, output_dir, test_size=0.2, random_state=42):
     # Initialize and fit preprocessor
     print("Fitting preprocessor...")
     preprocessor = HeartDiseasePreprocessor()
-    preprocessor.fit(train_df, target_col='target')
+    preprocessor.fit(train_df, target_col="target")
 
     # Transform data
     print("Transforming data...")
-    train_transformed = preprocessor.transform(train_df, target_col='target')
-    test_transformed = preprocessor.transform(test_df, target_col='target')
+    train_transformed = preprocessor.transform(train_df, target_col="target")
+    test_transformed = preprocessor.transform(test_df, target_col="target")
 
     # Log to MLflow if active run exists
     if mlflow.active_run():
@@ -82,8 +84,14 @@ def engineer_features(input_path, output_dir, test_size=0.2, random_state=42):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Feature Engineering for Heart Disease Prediction")
-    parser.add_argument("--input", default="data/processed/heart_disease_clean.csv", help="Path to input cleaned data")
-    parser.add_argument("--output-dir", default="data/processed", help="Directory to save engineered features")
+    parser.add_argument(
+        "--input",
+        default="data/processed/heart_disease_clean.csv",
+        help="Path to input cleaned data",
+    )
+    parser.add_argument(
+        "--output-dir", default="data/processed", help="Directory to save engineered features"
+    )
     parser.add_argument("--test-size", type=float, default=0.2, help="Test set size ratio")
     parser.add_argument("--random-state", type=int, default=42, help="Random seed")
 
