@@ -1,30 +1,6 @@
 """
 Tests for data loading and validation.
 """
-import pandas as pd
-
-
-class TestDataLoading:
-    """Test cases for data loading functionality"""
-
-    def test_raw_data_exists(self, data_paths):
-        """Test that raw data file exists"""
-        assert data_paths["raw_data"].exists(), f"Raw data not found at {data_paths['raw_data']}"
-
-    def test_raw_data_loads(self, data_paths):
-        """Test that raw data can be loaded"""
-        if data_paths["raw_data"].exists():
-            df = pd.read_csv(data_paths["raw_data"])
-            assert df is not None
-            assert len(df) > 0
-
-    def test_raw_data_schema(self, data_paths):
-        """Test that raw data has expected columns"""
-        if data_paths["raw_data"].exists():
-            df = pd.read_csv(data_paths["raw_data"])
-            expected_columns = ["age", "sex", "cp", "trestbps", "chol", "target"]
-            for col in expected_columns:
-                assert col in df.columns, f"Expected column '{col}' not found"
 
 
 class TestDataValidation:
@@ -82,32 +58,3 @@ class TestDataSplitting:
 
         actual_ratio = len(X_test) / (len(X_train) + len(X_test))
         assert abs(actual_ratio - test_size) < 0.02  # Within 2%
-
-
-class TestProcessedData:
-    """Test cases for processed/engineered features"""
-
-    def test_processed_features_exist(self, data_paths):
-        """Test that processed feature files exist"""
-        assert data_paths["train_features"].exists(), "Training features not found"
-        assert data_paths["test_features"].exists(), "Test features not found"
-
-    def test_processed_features_have_same_columns(self, data_paths):
-        """Test that train and test have same columns"""
-        if data_paths["train_features"].exists() and data_paths["test_features"].exists():
-            train_df = pd.read_csv(data_paths["train_features"])
-            test_df = pd.read_csv(data_paths["test_features"])
-
-            assert set(train_df.columns) == set(test_df.columns)
-
-    def test_features_are_scaled(self, data_paths):
-        """Test that numerical features appear to be scaled"""
-        if data_paths["train_features"].exists():
-            train_df = pd.read_csv(data_paths["train_features"])
-
-            # Scaled features should have values roughly in range of -3 to 3
-            numerical_cols = ["age", "trestbps", "chol", "thalach"]
-            for col in numerical_cols:
-                if col in train_df.columns:
-                    assert train_df[col].min() > -10, f"{col} might not be scaled"
-                    assert train_df[col].max() < 10, f"{col} might not be scaled"

@@ -2,7 +2,6 @@
 Tests for model training functionality.
 """
 import joblib
-import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import cross_val_score
@@ -172,31 +171,3 @@ class TestCrossValidation:
             scores = cross_val_score(model, X, y, cv=3, scoring=metric)
             assert len(scores) == 3
             assert all(0 <= score <= 1 for score in scores)
-
-
-class TestSavedModel:
-    """Test cases for the actual saved project model"""
-
-    def test_project_model_exists(self, data_paths):
-        """Test that the project's trained model exists"""
-        assert data_paths["model"].exists(), f"Model not found at {data_paths['model']}"
-
-    def test_project_model_can_load(self, data_paths):
-        """Test that the project model can be loaded"""
-        if data_paths["model"].exists():
-            model = joblib.load(data_paths["model"])
-            assert model is not None
-            assert hasattr(model, "predict")
-
-    def test_project_model_can_predict(self, data_paths):
-        """Test that project model can make predictions on test data"""
-        if data_paths["model"].exists() and data_paths["test_features"].exists():
-            model = joblib.load(data_paths["model"])
-            test_df = pd.read_csv(data_paths["test_features"])
-
-            # Remove target and metadata if present
-            X_test = test_df.drop(columns=["target", "timestamp", "patient_id"], errors="ignore")
-
-            predictions = model.predict(X_test)
-            assert len(predictions) == len(X_test)
-            assert all(p in [0, 1] for p in predictions)

@@ -4,6 +4,7 @@ Register trained models to MLflow Model Registry.
 This script registers the best models from MLflow runs to the Model Registry
 for easier model management and deployment.
 """
+import argparse
 import os
 
 import mlflow
@@ -68,17 +69,14 @@ def register_model(client, run_id, model_name, model_type):
         return None
 
 
-import argparse
-
-
 def main():
     """Main function to register models."""
     parser = argparse.ArgumentParser(description="Register models to MLflow")
     parser.add_argument(
-        "--threshold", 
-        type=float, 
-        default=0.8, 
-        help="Minimum ROC-AUC score required for registration"
+        "--threshold",
+        type=float,
+        default=0.8,
+        help="Minimum ROC-AUC score required for registration",
     )
     args = parser.parse_args()
 
@@ -109,7 +107,7 @@ def main():
 
     for model_type, run in best_runs.items():
         test_auc = run.data.metrics.get("test_roc_auc", 0)
-        
+
         # Check threshold
         if test_auc < args.threshold:
             print(f"[SKIP] {model_type} (ROC-AUC {test_auc:.4f} < {args.threshold})")
@@ -128,7 +126,7 @@ def main():
                     "version": version.version,
                     "type": model_type,
                     "run_id": run.info.run_id,
-                    "auc": test_auc
+                    "auc": test_auc,
                 }
             )
 
