@@ -50,16 +50,17 @@ Thumbs.db
 # MLOps specific
 mlruns/
 artifacts/
-/models/
-*.pkl
+# Allow models and data files needed for tests
+# /models/
+# *.pkl
 *.h5
 *.onnx
 
-# Data (uncomment if you don't want to commit datasets)
-/data/*
+# Data - Allow data files needed for tests
+# /data/*
 !/data/**/*.dvc
-*.csv
-*.parquet
+# *.csv
+# *.parquet
 
 # Logs
 *.log
