@@ -20,6 +20,8 @@ stages:
     cmd: python src/models/train_model.py --train-path data/processed/features_train.csv --test-path data/processed/features_test.csv --output-path models/model.pkl --metrics-path metrics/training_metrics.json
     deps:
       - src/models/train_model.py
+      - src/models/evaluation.py
+      - src/models/mlflow_config.py
       - data/processed/features_train.csv
       - data/processed/features_test.csv
     outs:
@@ -27,4 +29,5 @@ stages:
     metrics:
       - metrics/training_metrics.json:
           cache: false
+
 

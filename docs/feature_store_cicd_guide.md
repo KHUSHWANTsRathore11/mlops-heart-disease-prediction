@@ -11,21 +11,21 @@ This guide explains how to use **DVC (Data Version Control)** as a lightweight F
 We use DVC to track feature files (Parquet/CSV) and store them in Azure Blob Storage. Git tracks the specific versions (hashes) of these files.
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                   GitHub Repository (Git)                    │
-│  • Source code (feature engineering logic)                  │
-│  • dvc.yaml (pipeline definition)                           │
-│  • dvc.lock (exact version snapshot)                        │
-│  • .dvc files (pointers to blob storage)                    │
-└─────────────────────────────────────────────────────────────┘
-                              │
-                              ▼ (dvc pull / push)
-┌─────────────────────────────────────────────────────────────┐
-│              Azure Blob Storage (DVC Remote)                 │
-│  • Raw datasets (versioned by hash)                        │
-│  • Processed feature sets (versioned by hash)              │
-│  • Implementation Agnostic Storage                          │
-└─────────────────────────────────────────────────────────────┘
++-------------------------------------------------------------+
+|                  GitHub Repository (Git)                    |
+|  - Source code (feature engineering logic)                  |
+|  - dvc.yaml (pipeline definition)                           |
+|  - dvc.lock (exact version snapshot)                        |
+|  - .dvc files (pointers to blob storage)                    |
++-------------------------------------------------------------+
+                              |
+                              v (dvc pull / push)
++-------------------------------------------------------------+
+|             Azure Blob Storage (DVC Remote)                 |
+|  - Raw datasets (versioned by hash)                         |
+|  - Processed feature sets (versioned by hash)               |
+|  - Implementation Agnostic Storage                          |
++-------------------------------------------------------------+
 ```
 
 ## CI/CD Workflow

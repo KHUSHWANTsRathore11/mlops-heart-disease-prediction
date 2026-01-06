@@ -1,5 +1,0 @@
-[core]
-    remote = azure-remote
-['remote "azure-remote"']
-    url = azure://dvc-data/dvc-data
-    account_name = mlopsheartstor4enbsn

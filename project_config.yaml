@@ -1,4 +1,5 @@
 azure:
+  subscription_id: "e6f1b50c-9011-470e-8dc5-56306950e364"
   resource_group: "mlops-heart-rg"
   workspace_name: "mlops-heart-aml-ws"
   location: "southeastasia"

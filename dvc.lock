@@ -15,14 +15,14 @@ stages:
     outs:
     - path: data/processed/heart_disease_clean.csv
       hash: md5
-      md5: 185c0321f6eedca04966c107687fa1b6
+      md5: 3b3d458790a8d6c73e31833c26a49e17
       size: 84215
   engineer_features:
     cmd: python src/features/engineer_features.py
     deps:
     - path: data/processed/heart_disease_clean.csv
       hash: md5
-      md5: 185c0321f6eedca04966c107687fa1b6
+      md5: 3b3d458790a8d6c73e31833c26a49e17
       size: 84215
     - path: src/features/engineer_features.py
       hash: md5
@@ -51,16 +51,24 @@ stages:
       hash: md5
       md5: 9d423014e25ff4691f1f0fc9cc9b70c3
       size: 205196
+    - path: src/models/evaluation.py
+      hash: md5
+      md5: 03b75e263775bf48260b7bf79e0a1624
+      size: 7856
+    - path: src/models/mlflow_config.py
+      hash: md5
+      md5: dcb65cb2bfd89e4e8ccc620d4fe20f43
+      size: 2969
     - path: src/models/train_model.py
       hash: md5
-      md5: 54f898ce69fdfafb4992b59c473a1ad5
-      size: 4282
+      md5: 0fa30227b9aa38a1e2222096b6f93584
+      size: 11542
     outs:
     - path: metrics/training_metrics.json
       hash: md5
-      md5: 798630c89c50846e5f5a2d05b4655ea0
-      size: 105
+      md5: c79f6f46fdafaad7558ad814a882323e
+      size: 322
     - path: models/model.pkl
       hash: md5
-      md5: c5c74c56022957ea7b0bbb61a11c5208
-      size: 1339
+      md5: c4e7e0269a38fbbaa3b65a229bb5362d
+      size: 1312009
