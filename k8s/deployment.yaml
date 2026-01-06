@@ -41,6 +41,8 @@ spec:
             configMapKeyRef:
               name: heart-disease-api-config
               key: MODEL_DIR
+        - name: MLFLOW_TRACKING_URI
+          value: "http://172.18.0.1:5002"
         resources:
           requests:
             memory: "256Mi"

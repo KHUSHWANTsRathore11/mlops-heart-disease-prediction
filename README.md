@@ -7,18 +7,31 @@ End-to-end machine learning project for predicting heart disease risk using MLOp
 
 ```
 mlops-heart-disease-prediction/
-   data/
-      raw/              # Raw data files
-      processed/        # Cleaned and processed data
-   notebooks/            # Jupyter notebooks for exploration
-   src/
-      data/            # Data processing modules
-   deployment/
-      terraform/       # Infrastructure as Code
-   docs/                # Documentation
-   requirements.txt     # Python dependencies
-   README.md
+   .github/workflows/     # CI/CD pipelines
+   app/                   # Flask API source
+   data/                  # Data files (DVC tracked)
+   deployment/            # Infrastructure as Code (Terraform)
+   docs/                  # Documentation & Screenshots
+   k8s/                   # Kubernetes manifests
+   metrics/               # Model training metrics
+   mlruns/                # MLflow tracking store
+   models/                # Serialized models & registry
+   notebooks/             # EDA & experimental notebooks
+   scripts/               # Utility & automation scripts
+   src/                   # Core source code
+      data/             # Data processing modules
+      features/         # Feature engineering modules
+      models/           # Model training & evaluation
+   tests/                 # Automated tests (pytest)
+   dvc.yaml              # DVC pipeline configuration
+   Dockerfile            # Container build definition
+   project_config.yaml   # Project configuration
+   pyproject.toml        # Build system configuration
+   requirements.txt      # Python dependencies
+   test_api_request.sh   # API testing script
+   README.md             # Project overview
 ```
+
 
 ## Setup Instructions
 
@@ -52,13 +65,12 @@ python src/data/download_data.py
 
 ## Task Progress
 
-### Task 1: Data Acquisition & EDA [5 marks]
-- Data download script
+### Task 1: Data Acquisition & EDA 
 - Data cleaning utilities
 - EDA notebook with visualizations
 - Execute and verify results
 
-### Task 2: Feature Engineering & Model Development [8 marks]
+### Task 2: Feature Engineering & Model Development 
 - Feature engineering pipeline
   - Data cleaning and preprocessing
   - StandardScaler for numerical features
@@ -75,7 +87,7 @@ python src/data/download_data.py
   - Logistic Regression: 89.40% ROC-AUC
   - Random Forest: 92.75% ROC-AUC (Best Model)
 
-### Task 3: Experiment Tracking [5 marks]
+### Task 3: Experiment Tracking 
 - MLflow integration
   - Local tracking server setup
   - Experiment creation and management
@@ -85,7 +97,7 @@ python src/data/download_data.py
   - Artifacts logging (plots, reports)
   - Model registry
 
-### Task 4: Model Packaging & Reproducibility [7 marks]
+### Task 4: Model Packaging & Reproducibility 
 - Model serialization
   - Best model saved as `models/model.pkl` (Random Forest, 1.3MB)
   - Model can be loaded and used for predictions
@@ -97,7 +109,7 @@ python src/data/download_data.py
   - DVC pipeline for full reproducibility
   - Metrics tracked in `metrics/training_metrics.json`
 
-### Task 5: CI/CD Pipeline & Automated Testing [8 marks]
+### Task 5: CI/CD Pipeline & Automated Testing 
 - Unit tests
   - Expanded test suite (40 tests total)
   - Data loading tests (13 tests)
@@ -110,7 +122,7 @@ python src/data/download_data.py
   - DVC pipeline verification
   - Artifact upload (coverage reports)
 
-### Task 6: Model Containerization [5 marks]
+### Task 6: Model Containerization 
 - Dockerfile
   - Multi-stage build with Python 3.11-slim
   - Optimized with .dockerignore
@@ -123,7 +135,7 @@ python src/data/download_data.py
   - Returns prediction with confidence scores
   - Running on port 8000
 
-### Task 7: Production Deployment [7 marks]
+### Task 7: Production Deployment 
 - Local kubernetes deployment
   - Namespace for isolation
   - ConfigMap for configuration
@@ -138,7 +150,7 @@ python src/data/download_data.py
   - kustomization.yaml
   - Comprehensive deployment README
 
-### Task 8: Monitoring & Logging [3 marks]
+### Task 8: Monitoring & Logging 
 - Logging implementation
   - Structured JSON logging
   - Request/response logging with duration tracking
@@ -149,7 +161,7 @@ python src/data/download_data.py
   - Log analysis script (scripts/analyze_logs.py)
   - Comprehensive monitoring documentation
 
-### Task 9: Documentation & Reporting [2 marks]
+### Task 9: Documentation & Reporting 
 - Final report
   - Executive summary
   - All tasks and results documented
@@ -201,12 +213,8 @@ jupyter notebook notebooks/01_data_acquisition_eda.ipynb
 
 See LICENSE file for details.
 
-## Contributors
-
-- [Your Name]
 
 ## Assignment Details
 
 - Course: MLOps (S1-25_AIMLCZG523)
 - Assignment: I
-- Total Marks: 50

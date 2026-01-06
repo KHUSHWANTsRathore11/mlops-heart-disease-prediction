@@ -4,7 +4,7 @@ import sys
 import pandas as pd
 
 
-def test_model_inference(tmp_path):
+def test_model_inference():
     """Test that model can make predictions on sample data (using temp model)"""
     try:
         from sklearn.linear_model import LogisticRegression
@@ -34,6 +34,7 @@ def test_model_inference(tmp_path):
         preprocessor.fit(df, target_col="target")
         X = preprocessor.transform(df, target_col="target")
         y = df["target"]
+        X = X.drop(columns=["target"])
 
         model = LogisticRegression()
         model.fit(X, y)
@@ -56,7 +57,7 @@ def test_model_inference(tmp_path):
                     "ca": 0,
                     "thal": 1,
                     # "timestamp" not needed for basic preprocessor
-                    "patient_id": 1,
+                    # "patient_id": 1,
                 }
             ]
         )

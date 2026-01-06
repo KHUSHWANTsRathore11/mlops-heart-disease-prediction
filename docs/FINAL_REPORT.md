@@ -1,8 +1,29 @@
 # Heart Disease Prediction MLOps Project - Final Report
 
+## Project Details
+**GitHub Repository**: [https://github.com/ksr11/mlops-heart-disease-prediction](https://github.com/ksr11/mlops-heart-disease-prediction)
+**Project Walkthrough Video**: [https://youtu.be/eAqeXJwApDM](https://youtu.be/eAqeXJwApDM)
+
+## Group Information
+
+**Group ID**: 84
+
+**Group Members Name with Student ID**:
+
+| Sl No | BITS ID | Name | Contribution |
+|-------|---------|------|--------------|
+| 1 | 2024aa05486 | LAKSHMI RAMYA VEMURI | 100% |
+| 2 | 2024aa05487 | SUBHASISH DATTA | 100% |
+| 3 | 2024aa05488 | PUPPALA V V SUDHAKAR | 100% |
+| 4 | 2024aa05489 | K SREELAXMI | 100% |
+| 5 | 2024aa05490 | KHUSWANT SINGH RATHORE | 100% |
+
+---
+
+
 ## Executive Summary
 
-This project implements a complete end-to-end MLOps pipeline for heart disease prediction, achieving **50/50 marks** across all tasks. The system includes data versioning (DVC), experiment tracking (MLflow), automated CI/CD (GitHub Actions), containerization (Docker), Kubernetes deployment, and comprehensive monitoring.
+This project implements a complete end-to-end MLOps pipeline for heart disease prediction. The system includes data versioning (DVC), experiment tracking (MLflow), automated CI/CD (GitHub Actions), containerization (Docker), Kubernetes deployment, and comprehensive monitoring.
 
 **Key Achievements**:
 - **Best Model**: Random Forest with 92.75% ROC-AUC
@@ -152,23 +173,6 @@ dvc repro  # Reproduces entire pipeline
 ![CI/CD](screenshots/5_CICD/github_actions.png)
 ![CI/CD](screenshots/5_CICD/github_actions_2.png)
 
-**Screenshots to Add**:
-```
-[SCREENSHOT 5.1] - GitHub Actions Workflow
-How to capture: On GitHub, go to Actions tab and capture:
-  - Workflow runs list
-  - Successful workflow run details
-  - All jobs passing (lint, test, dvc-pipeline)
-
-[SCREENSHOT 5.2] - Test Results
-How to capture: Run 'pytest tests/ -v' and capture:
-  - All 40 tests listed
-  - Test results summary (40 passed)
-
-[SCREENSHOT 5.3] - Coverage Report
-How to capture: Run 'pytest tests/ --cov=src --cov-report=term' and capture coverage output
-```
-
 ---
 
 ### Task 6: Model Containerization 
@@ -226,10 +230,6 @@ How to capture: Run 'pytest tests/ --cov=src --cov-report=term' and capture cove
 - ConfigMap for configuration
 - Deployment with health checks
 - Service for load balancing
-
-
-**manifests**:
-![manifests](screenshots/7_ProductionDeployment/manifests.png)
 
 **deployment**:
 ```markdown
@@ -300,24 +300,6 @@ heart-disease-api-59d98866b6-v8v4m   1/1     Running   0          21s
 =========================================
 Test complete.
 
-```
-
-**Screenshots to Add**:
-```
-[SCREENSHOT 7.1] - Kubernetes Manifests
-How to capture: Run 'ls -lah k8s/' to show all manifest files
-
-[SCREENSHOT 7.2] - Deployment YAML
-How to capture: Show k8s/deployment.yaml highlighting:
-  - Replicas: 2
-  - Resource limits
-  - Health probes
-
-[SCREENSHOT 7.3] - Kubectl Apply (if cluster available)
-How to capture: If k8s cluster available, run 'kubectl apply -f k8s/' and capture:
-  - Resources created
-  - Pod status with 'kubectl get pods -n heart-disease'
-  Or show the manifest files content
 ```
 
 ---
