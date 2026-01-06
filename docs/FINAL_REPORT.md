@@ -1,8 +1,12 @@
 # Heart Disease Prediction MLOps Project - Final Report
-
+---
 ## Project Details
-**GitHub Repository**: [https://github.com/ksr11/mlops-heart-disease-prediction](https://github.com/ksr11/mlops-heart-disease-prediction)
-**Project Walkthrough Video**: [https://youtu.be/eAqeXJwApDM](https://youtu.be/eAqeXJwApDM)
+
+- **GitHub Repository**: [https://github.com/ksr11/mlops-heart-disease-prediction](https://github.com/ksr11/mlops-heart-disease-prediction)
+
+- **Project Walkthrough Video**: [https://youtu.be/eAqeXJwApDM](https://youtu.be/eAqeXJwApDM)
+
+---
 
 ## Group Information
 
