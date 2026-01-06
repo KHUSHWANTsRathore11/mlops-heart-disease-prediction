@@ -12,7 +12,13 @@ def test_model_inference():
         model = joblib.load("models/model.pkl")
         preprocessor = joblib.load("models/preprocessor.pkl")
 
-        # Create sample input
+        # Get the timestamp that the preprocessor expects
+        if "timestamp" in preprocessor.label_encoders:
+            trained_timestamp = preprocessor.label_encoders["timestamp"].classes_[0]
+        else:
+            trained_timestamp = "2026-01-06 01:39:15.441070"
+
+        # Create sample input with all features the preprocessor expects
         sample = pd.DataFrame(
             [
                 {
@@ -29,14 +35,22 @@ def test_model_inference():
                     "slope": 0,
                     "ca": 0,
                     "thal": 1,
+                    "timestamp": trained_timestamp,
+                    "patient_id": 1,
                 }
             ]
         )
 
-        # Preprocess and make prediction
+        # Preprocess the sample
         sample_processed = preprocessor.transform(sample)
-        pred = model.predict(sample_processed)
-        prob = model.predict_proba(sample_processed)
+
+        # Drop columns not expected by the model
+        model_features = model.feature_names_in_
+        sample_for_model = sample_processed[model_features]
+
+        # Make prediction
+        pred = model.predict(sample_for_model)
+        prob = model.predict_proba(sample_for_model)
 
         print(f"Prediction: {pred[0]}")
         print(f"Probability: {prob[0]}")
