@@ -7,6 +7,7 @@ End-to-end machine learning project for predicting heart disease risk using MLOp
 
 ```
 mlops-heart-disease-prediction/
+<<<<<<< HEAD
    .github/workflows/     # CI/CD pipelines
    app/                   # Flask API source
    data/                  # Data files (DVC tracked)
@@ -33,6 +34,21 @@ mlops-heart-disease-prediction/
 ```
 
 
+=======
+   data/
+      raw/              # Raw data files
+      processed/        # Cleaned and processed data
+   notebooks/            # Jupyter notebooks for exploration
+   src/
+      data/            # Data processing modules
+   deployment/
+      terraform/       # Infrastructure as Code
+   docs/                # Documentation
+   requirements.txt     # Python dependencies
+   README.md
+```
+
+>>>>>>> origin/develop
 ## Setup Instructions
 
 ### 1. Clone the Repository
@@ -65,12 +81,21 @@ python src/data/download_data.py
 
 ## Task Progress
 
+<<<<<<< HEAD
 ### Task 1: Data Acquisition & EDA 
+=======
+### Task 1: Data Acquisition & EDA [5 marks]
+- Data download script
+>>>>>>> origin/develop
 - Data cleaning utilities
 - EDA notebook with visualizations
 - Execute and verify results
 
+<<<<<<< HEAD
 ### Task 2: Feature Engineering & Model Development 
+=======
+### Task 2: Feature Engineering & Model Development [8 marks]
+>>>>>>> origin/develop
 - Feature engineering pipeline
   - Data cleaning and preprocessing
   - StandardScaler for numerical features
@@ -87,7 +112,11 @@ python src/data/download_data.py
   - Logistic Regression: 89.40% ROC-AUC
   - Random Forest: 92.75% ROC-AUC (Best Model)
 
+<<<<<<< HEAD
 ### Task 3: Experiment Tracking 
+=======
+### Task 3: Experiment Tracking [5 marks]
+>>>>>>> origin/develop
 - MLflow integration
   - Local tracking server setup
   - Experiment creation and management
@@ -97,7 +126,11 @@ python src/data/download_data.py
   - Artifacts logging (plots, reports)
   - Model registry
 
+<<<<<<< HEAD
 ### Task 4: Model Packaging & Reproducibility 
+=======
+### Task 4: Model Packaging & Reproducibility [7 marks]
+>>>>>>> origin/develop
 - Model serialization
   - Best model saved as `models/model.pkl` (Random Forest, 1.3MB)
   - Model can be loaded and used for predictions
@@ -109,7 +142,11 @@ python src/data/download_data.py
   - DVC pipeline for full reproducibility
   - Metrics tracked in `metrics/training_metrics.json`
 
+<<<<<<< HEAD
 ### Task 5: CI/CD Pipeline & Automated Testing 
+=======
+### Task 5: CI/CD Pipeline & Automated Testing [8 marks]
+>>>>>>> origin/develop
 - Unit tests
   - Expanded test suite (40 tests total)
   - Data loading tests (13 tests)
@@ -122,7 +159,11 @@ python src/data/download_data.py
   - DVC pipeline verification
   - Artifact upload (coverage reports)
 
+<<<<<<< HEAD
 ### Task 6: Model Containerization 
+=======
+### Task 6: Model Containerization [5 marks]
+>>>>>>> origin/develop
 - Dockerfile
   - Multi-stage build with Python 3.11-slim
   - Optimized with .dockerignore
@@ -135,7 +176,11 @@ python src/data/download_data.py
   - Returns prediction with confidence scores
   - Running on port 8000
 
+<<<<<<< HEAD
 ### Task 7: Production Deployment 
+=======
+### Task 7: Production Deployment [7 marks]
+>>>>>>> origin/develop
 - Local kubernetes deployment
   - Namespace for isolation
   - ConfigMap for configuration
@@ -150,7 +195,11 @@ python src/data/download_data.py
   - kustomization.yaml
   - Comprehensive deployment README
 
+<<<<<<< HEAD
 ### Task 8: Monitoring & Logging 
+=======
+### Task 8: Monitoring & Logging [3 marks]
+>>>>>>> origin/develop
 - Logging implementation
   - Structured JSON logging
   - Request/response logging with duration tracking
@@ -161,7 +210,11 @@ python src/data/download_data.py
   - Log analysis script (scripts/analyze_logs.py)
   - Comprehensive monitoring documentation
 
+<<<<<<< HEAD
 ### Task 9: Documentation & Reporting 
+=======
+### Task 9: Documentation & Reporting [2 marks]
+>>>>>>> origin/develop
 - Final report
   - Executive summary
   - All tasks and results documented
@@ -213,8 +266,18 @@ jupyter notebook notebooks/01_data_acquisition_eda.ipynb
 
 See LICENSE file for details.
 
+<<<<<<< HEAD
+=======
+## Contributors
+
+- [Your Name]
+>>>>>>> origin/develop
 
 ## Assignment Details
 
 - Course: MLOps (S1-25_AIMLCZG523)
 - Assignment: I
+<<<<<<< HEAD
+=======
+- Total Marks: 50
+>>>>>>> origin/develop

@@ -4,7 +4,10 @@ Register trained models to MLflow Model Registry.
 This script registers the best models from MLflow runs to the Model Registry
 for easier model management and deployment.
 """
+<<<<<<< HEAD
 import argparse
+=======
+>>>>>>> origin/develop
 import os
 
 import mlflow
@@ -71,6 +74,7 @@ def register_model(client, run_id, model_name, model_type):
 
 def main():
     """Main function to register models."""
+<<<<<<< HEAD
     parser = argparse.ArgumentParser(description="Register models to MLflow")
     parser.add_argument(
         "--threshold",
@@ -83,6 +87,10 @@ def main():
     print("=" * 70)
     print("MLflow Model Registration")
     print(f"Threshold: ROC-AUC >= {args.threshold}")
+=======
+    print("=" * 70)
+    print("MLflow Model Registration")
+>>>>>>> origin/develop
     print("=" * 70)
 
     # Setup MLflow
@@ -96,12 +104,17 @@ def main():
         print("No runs found!")
         return
 
+<<<<<<< HEAD
     print(f"\nFound {len(best_runs)} model(s) candidates:")
+=======
+    print(f"\nFound {len(best_runs)} model(s) to register:")
+>>>>>>> origin/develop
     for model_type, run in best_runs.items():
         test_auc = run.data.metrics.get("test_roc_auc", 0)
         print(f"  - {model_type}: ROC-AUC = {test_auc:.4f} (Run: {run.info.run_id[:8]}...)")
 
     # Register each model
+<<<<<<< HEAD
     print("\nRegistering eligible models...")
     registered = []
 
@@ -113,6 +126,12 @@ def main():
             print(f"[SKIP] {model_type} (ROC-AUC {test_auc:.4f} < {args.threshold})")
             continue
 
+=======
+    print("\nRegistering models...")
+    registered = []
+
+    for model_type, run in best_runs.items():
+>>>>>>> origin/develop
         # Create model name
         model_name = f"heart-disease-{model_type.replace('_', '-')}"
 
@@ -126,7 +145,10 @@ def main():
                     "version": version.version,
                     "type": model_type,
                     "run_id": run.info.run_id,
+<<<<<<< HEAD
                     "auc": test_auc,
+=======
+>>>>>>> origin/develop
                 }
             )
 
@@ -136,7 +158,11 @@ def main():
     print("=" * 70)
     if registered:
         for model in registered:
+<<<<<<< HEAD
             print(f"[SUCCESS] {model['name']} v{model['version']} (AUC: {model['auc']:.4f})")
+=======
+            print(f"[SUCCESS] {model['name']} v{model['version']} ({model['type']})")
+>>>>>>> origin/develop
 
         print(f"\n[SUCCESS] Successfully registered {len(registered)} model(s)!")
         print("\nView registered models in MLflow UI:")
@@ -144,7 +170,11 @@ def main():
         print("  2. Click on 'Models' tab in the top menu")
         print("  3. You'll see all registered models")
     else:
+<<<<<<< HEAD
         print("[WARNING] No models met the registration criteria.")
+=======
+        print("[ERROR] No models were registered")
+>>>>>>> origin/develop
 
     print("=" * 70)
 

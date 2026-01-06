@@ -1,10 +1,15 @@
 """Test model inference capability"""
 import sys
 
+<<<<<<< HEAD
+=======
+import joblib
+>>>>>>> origin/develop
 import pandas as pd
 
 
 def test_model_inference():
+<<<<<<< HEAD
     """Test that model can make predictions on sample data (using temp model)"""
     try:
         from sklearn.linear_model import LogisticRegression
@@ -38,6 +43,19 @@ def test_model_inference():
 
         model = LogisticRegression()
         model.fit(X, y)
+=======
+    """Test that model can make predictions on sample data"""
+    try:
+        # Load model and preprocessor
+        model = joblib.load("models/model.pkl")
+        preprocessor = joblib.load("models/preprocessor.pkl")
+
+        # Get the timestamp that the preprocessor expects
+        if "timestamp" in preprocessor.label_encoders:
+            trained_timestamp = preprocessor.label_encoders["timestamp"].classes_[0]
+        else:
+            trained_timestamp = "2026-01-06 01:39:15.441070"
+>>>>>>> origin/develop
 
         # Create sample input with all features the preprocessor expects
         sample = pd.DataFrame(
@@ -56,8 +74,13 @@ def test_model_inference():
                     "slope": 0,
                     "ca": 0,
                     "thal": 1,
+<<<<<<< HEAD
                     # "timestamp" not needed for basic preprocessor
                     # "patient_id": 1,
+=======
+                    "timestamp": trained_timestamp,
+                    "patient_id": 1,
+>>>>>>> origin/develop
                 }
             ]
         )
@@ -65,15 +88,28 @@ def test_model_inference():
         # Preprocess the sample
         sample_processed = preprocessor.transform(sample)
 
+<<<<<<< HEAD
         # Make prediction
         pred = model.predict(sample_processed)
         prob = model.predict_proba(sample_processed)
+=======
+        # Drop columns not expected by the model
+        model_features = model.feature_names_in_
+        sample_for_model = sample_processed[model_features]
+
+        # Make prediction
+        pred = model.predict(sample_for_model)
+        prob = model.predict_proba(sample_for_model)
+>>>>>>> origin/develop
 
         print(f"Prediction: {pred[0]}")
         print(f"Probability: {prob[0]}")
         print("[SUCCESS] Model inference working")
 
+<<<<<<< HEAD
         assert len(pred) == 1
+=======
+>>>>>>> origin/develop
         return 0
     except Exception as e:
         print(f"[ERROR] Model inference failed: {e}")
