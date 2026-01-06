@@ -280,25 +280,7 @@ jobs:
         echo "STAGE 5.3: Model Inference Test"
         echo "========================================="
         if [ -f "models/model.pkl" ] && [ -f "models/preprocessor.pkl" ]; then
-          python << 'EOF'
-          import joblib
-          import numpy as np
-          import pandas as pd
-          model = joblib.load('models/model.pkl')
-          preprocessor = joblib.load('models/preprocessor.pkl')
-          # Create sample input
-          sample = pd.DataFrame([{
-              'age': 63, 'sex': 1, 'cp': 3, 'trestbps': 145,
-              'chol': 233, 'fbs': 1, 'restecg': 0, 'thalach': 150,
-              'exang': 0, 'oldpeak': 2.3, 'slope': 0, 'ca': 0, 'thal': 1
-            }])
-          # Make prediction
-          pred = model.predict(sample)
-          prob = model.predict_proba(sample)
-          print(f'Prediction: {pred[0]}')
-          print(f'Probability: {prob[0]}')
-          print('[SUCCESS] Model inference working')
-          EOF
+          python tests/test_model_inference.py
         else
           echo "[INFO] Skipping inference test (model files not available)"
         fi
